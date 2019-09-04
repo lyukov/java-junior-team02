@@ -37,7 +37,6 @@ public class Server implements ConnectionListener {
         log.info("New message: " + message + " from client: " + connection.toString());
         //TODO: refactor
         String[] mess = message.split(" ");
-        System.out.println(mess[0] + mess[1]);
         switch (mess[0]) {
             case "/exit":
                 handleExit(connection);
