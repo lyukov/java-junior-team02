@@ -1,5 +1,6 @@
 package com.lapushki.chat.server;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
     private static final int PORT = 8081;
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final Collection<Connection> connections = new LinkedList<>();
     private static DaoDumomi dao = new DaoDumomi();
 
@@ -31,10 +32,10 @@ public class Server implements ConnectionListener {
         }
     }
 
-
     @Override
     public synchronized void onReceiveString(Connection connection, String message) {
         log.info("New message: " + message + " from client: " + connection.toString());
+        //TODO: refactor
         String[] mess = message.split(" ");
         System.out.println(mess[0] + mess[1]);
         switch (mess[0]) {
@@ -60,7 +61,6 @@ public class Server implements ConnectionListener {
     }
 
     private void handleMessage(Connection connection, String message) {
-        log.info("New message: " + message + " from client: " + connection.toString());
         if (dao.saveDataBase(connection, message))
             this.sendMessageAllClients(message);
     }
@@ -69,7 +69,6 @@ public class Server implements ConnectionListener {
         for (Connection connection : connections)
             connection.sendMessage(connection.getSocket().getInetAddress() + ": " + msg);
     }
-
 
     @Override
     public synchronized void onConnectionReady(Connection connection) {
@@ -85,7 +84,7 @@ public class Server implements ConnectionListener {
 
     @Override
     public synchronized void onException(Connection connection, Exception ex) {
-        System.out.println("Connection exception: " + ex);
+        log.error("Connection exception: " + ex);
     }
 
     private void sendToAllConnections(String msg) {
@@ -93,9 +92,7 @@ public class Server implements ConnectionListener {
             c.sendMessage(msg);
     }
 
-
     public static void main(String[] args) {
         new Server();
-
     }
 }

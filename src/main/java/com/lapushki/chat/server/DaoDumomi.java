@@ -1,7 +1,5 @@
 package com.lapushki.chat.server;
 
-import com.lapushki.chat.model.RequestMessage;
-import com.lapushki.chat.model.ResponseMessage;
 
 import java.util.Collection;
 
