@@ -11,9 +11,8 @@ public class SQLConnector implements AutoCloseable {
     private ResultSet resultSet;
     private PreparedStatement preparedStatement = null;
 
-    public SQLConnector() {
+    public SQLConnector(String fileName) {
         try {
-            String fileName = "src/main/resources/connection.properties";
             Parser.parseConfig(fileName);
 
             connect = DriverManager.getConnection(Parser.getUrl(), Parser.getUser(), Parser.getPassword());
