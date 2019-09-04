@@ -2,6 +2,9 @@ package com.lapushki.server;
 
 
 
+import com.google.gson.Gson;
+import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.model.ResponseMessage;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -10,11 +13,13 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.LinkedList;
 
+
 public class Server implements ConnectionListener {
     private static final int PORT = 8080;
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
     private final Collection<Connection> connections = new LinkedList<>();
     private static DaoDumomi dao = new DaoDumomi();
+    private static final Gson gson = new Gson();
 
     private Server() {
         log.info("Server running...");
@@ -34,16 +39,19 @@ public class Server implements ConnectionListener {
         }
     }
 
+    //message to json
+
     @Override
-    public void onReceivedMessage(Connection connection, ResponseMessage responseMessage){
-        switch (responseMessage.message) {
-            case EXIT:
+    public void onReceivedMessage(Connection connection, String message){
+        RequestMessage requestMessage = gson.fromJson(message, RequestMessage.class);
+        switch (requestMessage.command) {
+            case "/exit":
                 handleExit(connection);
                 break;
-            case SEND:
-                handleMessage(connection, responseMessage);
+            case "/snd":
+                handleMessage(connection, requestMessage);
                 break;
-            case HISTORY:
+            case "/hist":
                 handleHistory(connection);
                 break;
         }
@@ -58,14 +66,19 @@ public class Server implements ConnectionListener {
         connection.sendMessage(dao.getHistory());
     }
 
-    private void handleMessage(Connection connection, ResponseMessage responseMessage) {
-       if (dao.saveDataBase(connection, responseMessage))
-           this.sendMessageAllClients(responseMessage);
+    private void handleMessage(Connection connection, RequestMessage requestMessage) {
+       if (dao.saveDataBase(connection, requestMessage))
+           this.sendMessageAllClients(requestMessage);
     }
 
-    private void sendMessageAllClients(ResponseMessage msg) {
+    private void sendMessageAllClients(RequestMessage msg) {
+        ResponseMessage responseMessage = new ResponseMessage(
+                "OK",
+                msg.message,
+                String.valueOf(System.currentTimeMillis())
+        );
         for (Connection connection: connections)
-            connection.sendMessage(msg);
+            connection.sendMessage(responseMessage);
     }
 
     @Override

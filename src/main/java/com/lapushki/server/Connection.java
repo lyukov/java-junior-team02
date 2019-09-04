@@ -1,6 +1,8 @@
 package com.lapushki.server;
 
 import com.google.gson.Gson;
+import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.model.ResponseMessage;
 
 
 import java.io.*;
@@ -33,7 +35,7 @@ public class Connection {
                     while (!thread.isInterrupted()) {
                         String jsonResponse = in.readLine();
                         ResponseMessage responseMessage = gson.fromJson(jsonResponse, ResponseMessage.class);
-                        listener.onReceivedMessage(Connection.this, responseMessage);
+                        listener.onReceivedMessage(Connection.this, responseMessage.toString()); //FIXME types
                     }
                 } catch (IOException ex) {
                     listener.onException(Connection.this, ex);
