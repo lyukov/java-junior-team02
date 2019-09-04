@@ -1,4 +1,4 @@
 package com.lapushki.chat.server;
 
-public class Main {
+public class ServerTest {
 }
