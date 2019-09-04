@@ -1,43 +1,64 @@
 package com.lapushki.chat.client;
 
-import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.ConnectionListener;
+import com.lapushki.chat.server.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
-    private static final int PORT = 8080;
+public class Client implements ConnectionListener {
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
     private static final String HOST = "localhost";
-    private Connection connection;
-    private Scanner scanner;
+    private static final int PORT = 8081;
 
-    private Client(Scanner scanner, Connection connection) {
-        this.scanner = scanner;
-        this.connection = connection;
+    Client() {
+        Connection connection;
+        Scanner scan = new Scanner(System.in);
+        try {
+            String msg = "";
+            connection = new Connection(this, HOST, PORT);
+            while(!msg.equals("exit")) {
+                msg = scan.nextLine();
+                connection.sendMessage(msg);
+            }
+            connection.disconnect();
+        }catch (IOException ex) {
+            printMessage("Connection exception: "+ex);
+        }
     }
 
-    private void run() {
-        try {
-            String in = scanner.nextLine();
-            while (!in.equals("\\exit")) {
-                RequestMessage message = connection.formMessageObject(in);
-                connection.sendMessage(message);
-                in = scanner.nextLine();
-            }
-        } finally {
-            connection.disconnect();
-        }
+    @Override
+    public synchronized void onConnectionReady(Connection connection) {
+        printMessage("Connection opened");
+        log.info("Connection opened: " + connection.getSocket().getInetAddress());
+    }
+
+    @Override
+    public synchronized void onReceiveString(Connection connection, String message) {
+        printMessage(message);
+        log.info("Receive message: " + message + ", from " + connection.getSocket().getInetAddress());
+    }
+
+    @Override
+    public synchronized void onDisconnect(Connection connection) {
+        printMessage("Connection closed");
+        log.info("Connection closed: " + connection.getSocket().getInetAddress());
+    }
+
+    @Override
+    public synchronized void onException(Connection connection, Exception ex) {
+        printMessage("Connection exception: "+ex);
+        log.error("Exception " + ex);
+    }
+
+    private synchronized void printMessage(String msg) {
+        System.out.println(msg);
     }
 
     public static void main(String[] args) {
-        try {
-            Socket socket = new Socket(HOST, PORT);
-            Client client = new Client(new Scanner(System.in), new Connection(socket));
-            client.run();
-        }
-        catch (IOException ex) {
-            System.out.println("Couldn't connect to server.");
-        }
+        new Client();
     }
 }

@@ -1,11 +1,12 @@
 package com.lapushki.chat.server;
 
 public interface ConnectionListener {
+    void onConnectionReady(Connection connection);
 
-    void onReceivedMessage(String message);
+    void onReceiveString(Connection connection, String message);
 
-    void onDisconnect();
+    void onDisconnect(Connection connection);
 
-    void onException(Exception ex);
+    void onException(Connection connection, Exception ex);
 
 }

@@ -1,6 +1,6 @@
 package com.lapushki.chat.model;
 
-public class ResponseMessage {
+public class ResponseMessage implements Message{
     public String status;
     public String message;
     public String time;
