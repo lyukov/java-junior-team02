@@ -1,7 +1,7 @@
 package com.lapushki.server;
 
 public interface ConnectionListener {
-    void onReceivedMessage(Connection connection, Message message);
+    void onReceivedMessage(Connection connection, ResponseMessage responseMessage);
 
     void onDisconnect(Connection connection);
 

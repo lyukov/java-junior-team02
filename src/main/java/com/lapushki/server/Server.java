@@ -35,13 +35,13 @@ public class Server implements ConnectionListener {
     }
 
     @Override
-    public void onReceivedMessage(Connection connection, Message message){
-        switch (message.getCommand()) {
+    public void onReceivedMessage(Connection connection, ResponseMessage responseMessage){
+        switch (responseMessage.message) {
             case EXIT:
                 handleExit(connection);
                 break;
             case SEND:
-                handleMessage(connection, message);
+                handleMessage(connection, responseMessage);
                 break;
             case HISTORY:
                 handleHistory(connection);
@@ -58,12 +58,12 @@ public class Server implements ConnectionListener {
         connection.sendMessage(dao.getHistory());
     }
 
-    private void handleMessage(Connection connection, Message message) {
-       if (dao.saveDataBase(connection, message))
-           this.sendMessageAllClients(message);
+    private void handleMessage(Connection connection, ResponseMessage responseMessage) {
+       if (dao.saveDataBase(connection, responseMessage))
+           this.sendMessageAllClients(responseMessage);
     }
 
-    private void sendMessageAllClients(Message msg) {
+    private void sendMessageAllClients(ResponseMessage msg) {
         for (Connection connection: connections)
             connection.sendMessage(msg);
     }
