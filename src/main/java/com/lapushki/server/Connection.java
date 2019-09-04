@@ -1,5 +1,7 @@
 package com.lapushki.server;
 
+import com.google.gson.Gson;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Collection;
@@ -27,7 +29,7 @@ public class Connection {
                 try {
                     while (!thread.isInterrupted()) {
                         String msg = in.readLine();
-                        listener.onReceiveString(Connection.this, msg);
+                        listener.onReceivedMessage(Connection.this, msg);
                     }
                 } catch (IOException ex) {
                     listener.onException(Connection.this, ex);
@@ -40,9 +42,18 @@ public class Connection {
     }
 
     public synchronized void sendMessage(Message msg) {
-        //TODO отправлять объект
         try {
-            out.write(msg.getIp() + ": " + msg.getMessage() + System.lineSeparator());
+            out.write(msg + "\r\n");
+            out.flush();
+        } catch (IOException e) {
+            listener.onException(Connection.this, e);
+            disconnect();
+        }
+    }
+
+    public synchronized void sendMessage(Collection<Message> msgs) {
+        try {
+            out.write(msgs + "\r\n");
             out.flush();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
@@ -51,9 +62,6 @@ public class Connection {
     }
 
 
-    public void sendMessage(Collection<Message> msgs) {
-    }
-
     public synchronized void disconnect() {
         thread.interrupt();
         try {
@@ -61,6 +69,11 @@ public class Connection {
         } catch (IOException e) {
             listener.onException(Connection.this, e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Connection: " + socket.getInetAddress() + ": " + socket.getPort();
     }
 
 }
