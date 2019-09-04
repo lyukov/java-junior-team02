@@ -1,10 +1,10 @@
-package com.lapushki.chat.client;
+package com.lapushki.chat.model;
 
-public class Message {
+public class RequestMessage {
     public String command;
     public String message;
 
-    public Message(String command, String message) {
+    public RequestMessage(String command, String message) {
         this.command = command;
         this.message = message;
     }
