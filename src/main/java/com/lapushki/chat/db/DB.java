@@ -8,7 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
-public class Main {
+public class DB {
     public static void main(String[] args) {
 
         System.out.println("Connecting to DB...");
