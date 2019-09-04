@@ -35,7 +35,7 @@ public class Server implements ConnectionListener {
     }
 
     @Override
-    public void onReceiveMessage(Connection connection, Message message) {
+    public void onReceivedMessage(Connection connection, Message message){
         switch (message.getCommand()) {
             case EXIT:
                 handleExit(connection);
@@ -50,36 +50,32 @@ public class Server implements ConnectionListener {
     }
 
     private void handleExit(Connection connection) {
-        System.out.println("Exit!");
+        log.info("Client disconnected: " + connection.toString());
         connection.disconnect();
     }
 
     private void handleHistory(Connection connection) {
-        sendMessage(connection, dao.getHistory());
+        connection.sendMessage(dao.getHistory());
     }
 
     private void handleMessage(Connection connection, Message message) {
        if (dao.saveDataBase(connection, message))
-           this.sendMessage(message);
+           this.sendMessageAllClients(message);
     }
 
-    private void sendMessage(Message msg) {
-        for (Connection c : connections)
-            c.sendMessage(msg);
-    }
-
-
-    private void sendMessage(Connection connection, Collection<Message> msgs) {
-        connection.sendMessage(msgs);
+    private void sendMessageAllClients(Message msg) {
+        for (Connection connection: connections)
+            connection.sendMessage(msg);
     }
 
     @Override
     public void onDisconnect(Connection connection) {
-
+        connections.remove(connection);
+        log.info("Client disconnected: " + connection.toString());
     }
 
     @Override
     public void onException(Connection connection, Exception ex) {
-        System.out.println("Connection exception: " + ex);
+        log.error("Connection exception: " + ex);
     }
 }
