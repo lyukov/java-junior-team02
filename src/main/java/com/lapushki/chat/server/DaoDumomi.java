@@ -1,4 +1,4 @@
-package com.lapushki.server;
+package com.lapushki.chat.server;
 
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.model.ResponseMessage;
@@ -6,11 +6,11 @@ import com.lapushki.chat.model.ResponseMessage;
 import java.util.Collection;
 
 public class DaoDumomi {
-    public boolean saveDataBase(Connection connection, RequestMessage responseMessage) {
+    public boolean saveDataBase(Connection connection, String message) {
         return true;
     }
 
-    public Collection<ResponseMessage>  getHistory() {
+    public Collection<String>  getHistory() {
         return null;
     }
 }

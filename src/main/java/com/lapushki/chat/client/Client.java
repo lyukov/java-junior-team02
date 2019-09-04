@@ -1,36 +1,56 @@
 package com.lapushki.chat.client;
 
-import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.ConnectionListener;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
-    private static final int PORT = 8080;
+public class Client implements ConnectionListener {
     private static final String HOST = "localhost";
-    private static Connection connection;
+    private static final int PORT = 8081;
+    private Connection connection;
 
-    private Client() {
+    Client() {
+        Scanner scan = new Scanner(System.in);
         try {
-            Scanner scan = new Scanner(System.in);
-            String in = "";
-            Socket socket = new Socket(HOST, PORT);
-            connection = new Connection(socket);
-            in = scan.nextLine();
-            while (!in.equals("\\exit")) {
-                RequestMessage message = connection.formMessageObject(in);
-                connection.sendMessage(message);
-                in = scan.nextLine();
+            String msg = "";
+            connection = new Connection(this, HOST, PORT);
+            while(!msg.equals("exit")) {
+                msg = scan.nextLine();
+                connection.sendMessage(msg);
             }
-        } catch (IOException ex) {
-            connection.printMessage(ex.getMessage());
-        } finally {
             connection.disconnect();
+        }catch (IOException ex) {
+            printMessage("Connection exception: "+ex);
         }
     }
 
+    @Override
+    public synchronized void onConnectionReady(Connection connection) {
+        printMessage("Connection opened");
+    }
+
+    @Override
+    public synchronized void onReceiveString(Connection connection, String message) {
+        printMessage(message);
+    }
+
+    @Override
+    public synchronized void onDisconnect(Connection connection) {
+        printMessage("Connection closed");
+    }
+
+    @Override
+    public synchronized void onException(Connection connection, Exception ex) {
+        printMessage("Connection exception: "+ex);
+    }
+
+    private synchronized void printMessage(String msg) {
+        System.out.println(msg);
+    }
+
     public static void main(String[] args) {
-        Client client = new Client();
+        new Client();
     }
 }
