@@ -20,7 +20,7 @@ public class Client implements ConnectionListener {
         try {
             String msg = "";
             connection = new Connection(this, HOST, PORT);
-            while(!msg.equals("exit")) {
+            while(!msg.equals("\\exit")) {
                 msg = scan.nextLine();
                 connection.sendMessage(msg);
             }
