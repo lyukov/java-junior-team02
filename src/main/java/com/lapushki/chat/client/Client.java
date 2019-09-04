@@ -9,28 +9,36 @@ import java.util.Scanner;
 public class Client {
     private static final int PORT = 8080;
     private static final String HOST = "localhost";
-    private static Connection connection;
+    private Connection connection;
+    private Scanner scanner;
+    private Socket socket;
 
-    private Client() {
+    private Client(Scanner scanner, Connection connection) {
+        this.scanner = scanner;
+        this.connection = connection;
+    }
+
+    private void run() {
         try {
-            Scanner scan = new Scanner(System.in);
-            String in = "";
-            Socket socket = new Socket(HOST, PORT);
-            connection = new Connection(socket);
-            in = scan.nextLine();
+            String in = scanner.nextLine();
             while (!in.equals("\\exit")) {
                 RequestMessage message = connection.formMessageObject(in);
                 connection.sendMessage(message);
-                in = scan.nextLine();
+                in = scanner.nextLine();
             }
-        } catch (IOException ex) {
-            connection.printMessage(ex.getMessage());
         } finally {
             connection.disconnect();
         }
     }
 
     public static void main(String[] args) {
-        Client client = new Client();
+        try {
+            Socket socket = new Socket(HOST, PORT);
+            Client client = new Client(new Scanner(System.in), new Connection(socket));
+            client.run();
+        }
+        catch (IOException ex) {
+            System.out.println("Couldn't connect to server.");
+        }
     }
 }
