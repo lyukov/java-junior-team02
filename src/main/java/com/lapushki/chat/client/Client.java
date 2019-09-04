@@ -11,7 +11,6 @@ public class Client {
     private static final String HOST = "localhost";
     private Connection connection;
     private Scanner scanner;
-    private Socket socket;
 
     private Client(Scanner scanner, Connection connection) {
         this.scanner = scanner;
