@@ -17,10 +17,11 @@ public class Client {
             String in = "";
             Socket socket = new Socket(HOST, PORT);
             connection = new Connection(socket);
-            while (!in.equals("exit")) {
-                in = scan.nextLine();
+            in = scan.nextLine();
+            while (!in.equals("\\exit")) {
                 RequestMessage message = connection.formMessageObject(in);
                 connection.sendMessage(message);
+                in = scan.nextLine();
             }
         } catch (IOException ex) {
             connection.printMessage(ex.getMessage());

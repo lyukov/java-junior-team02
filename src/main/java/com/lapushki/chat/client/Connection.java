@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class Connection implements ConnectionListener {
     private final Socket socket;
-    private final Thread thread;
+    private Thread thread;
     private final ConnectionListener listener;
     private final BufferedReader in;
     private final BufferedWriter out;
@@ -22,25 +22,26 @@ public class Connection implements ConnectionListener {
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        thread = new Thread((this::onMessageReceive));
+    }
+
+    public void init() {
+        thread = new Thread((() -> {
+            try {
+                while (!thread.isInterrupted() && !socket.isClosed()) {
+                    String jsonResponse = in.readLine();
+                    ResponseMessage responseMessage = gson.fromJson(jsonResponse, ResponseMessage.class);
+                    listener.onReceivedMessage(responseMessage.toString());
+                }
+            } catch (IOException ex) {
+                listener.onException(ex);
+            } finally {
+                disconnect();
+            }
+        }));
         thread.start();
     }
 
-    private void onMessageReceive (){
-        try {
-            while (!thread.isInterrupted()) {
-                String jsonResponse = in.readLine();
-                ResponseMessage responseMessage = gson.fromJson(jsonResponse, ResponseMessage.class);
-                listener.onReceivedMessage(responseMessage.toString());
-            }
-        } catch (IOException ex) {
-            listener.onException(ex);
-        } finally {
-            listener.onDisconnect();
-        }
-    }
-
-    public synchronized void sendMessage(RequestMessage msg) {
+    public void sendMessage(RequestMessage msg) {
         try {
             out.write(gson.toJson(msg));
             out.flush();
@@ -50,7 +51,7 @@ public class Connection implements ConnectionListener {
         }
     }
 
-    public synchronized void disconnect() {
+    public void disconnect() {
         try {
             thread.interrupt();
             out.close();
