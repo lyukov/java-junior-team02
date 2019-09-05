@@ -5,7 +5,7 @@ public enum Command {
     SEND("/snd"),
     HIST("/hist"),
     CHID("/chid"),
-    DEFAULT("");
+    DEFAULT("/");
 
     private final String message;
 

@@ -25,7 +25,7 @@ public class InputStreamListener implements Runnable {
         } catch (IOException ex) {
             listener.onException(connection, ex);
         } finally {
-            listener.onDisconnect(connection);
+            connection.disconnect();
         }
     }
 }

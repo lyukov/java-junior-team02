@@ -35,8 +35,7 @@ public class Connection {
             out.write(msg + LINE_BREAK);
             out.flush();
         } catch (IOException e) {
-            listener.onException(Connection.this, e);
-            disconnect();
+            listener.onException(this, e);
         }
     }
 
@@ -45,13 +44,14 @@ public class Connection {
     }
 
     public void disconnect() {
+        listener.onDisconnect(this);
         if (!executorService.isTerminated()) {
             executorService.shutdownNow();
         }
         try {
+            socket.close();
             out.close();
             in.close();
-            socket.close();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
         }
