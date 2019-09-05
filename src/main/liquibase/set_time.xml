@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="4" author="admin@gmail.com" context="set_time">
+    <changeSet id="2" author="admin" context="set_time">
         <sql>
             SET GLOBAL time_zone = '+3:00';
         </sql>

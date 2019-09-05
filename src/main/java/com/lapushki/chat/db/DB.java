@@ -1,6 +1,6 @@
 package com.lapushki.chat.db;
 
-import com.mongodb.Block;
+/*import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -67,5 +67,5 @@ public class DB {
         deleteSearchQuery.put("_id", new ObjectId("5b77c15cf0406c64b6c9dae4"));
         DeleteResult deleteResult = authorCollection.deleteOne(deleteSearchQuery);
         System.out.println("Documents updated: " + deleteResult.getDeletedCount());*/
-    }
-}
+//    }
+//}
