@@ -24,6 +24,7 @@ public class MessageHandler {
     }
 
     void handleMessage(Connection connection, Collection<Connection> connections, String message) {
+        //todo
         //if (dao.saveDataBase(connection, message))
             sendMessageAllClients(message, connections);
     }

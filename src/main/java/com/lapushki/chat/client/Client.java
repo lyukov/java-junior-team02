@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Client implements ConnectionListener {
+
     private static final String HOST = "localhost";
     private static final int PORT = 8081;
     private Connection connection;
