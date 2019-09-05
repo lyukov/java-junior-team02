@@ -2,6 +2,8 @@ package com.lapushki.chat.db;
 
 import java.sql.*;
 
+import static java.lang.System.exit;
+
 /**
  * Created by kate-c on 04/09/2019.
  */
@@ -10,14 +12,22 @@ public class SQLConnector implements AutoCloseable {
     private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
     private String sourceTable;
+    private Parser parser;
+
+
+    public SQLConnector() {
+        this("src/main/resources/connection.properties");
+    }
 
     public SQLConnector(String fileName) {
         try {
-            Parser.parseConfig(fileName);
-            sourceTable = "'" + Parser.getDatabase() + "'.'" + Parser.getTable() + "'";
-            connect = DriverManager.getConnection(Parser.getUrl(), Parser.getUser(), Parser.getPassword());
+            parser = new Parser(fileName);
+            sourceTable = parser.getDatabase() + "." + parser.getTable();
+            connect = DriverManager.getConnection(parser.getUrl(), parser.getUser(), parser.getPassword());
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Can't connect to the database!");
+            exit(1);
         }
     }
 

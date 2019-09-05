@@ -6,14 +6,20 @@ import java.io.IOException;
 
 public class Parser {
 
-    private static final String DELIMITER = ";";
-    private static String url;
-    private static String user;
-    private static String password;
-    private static String database;
-    private static String table;
+    private final String DELIMITER = ";";
+    private String url;
+    private String user;
+    private String password;
+    private String database;
+    private String table;
+    private String fileName;
 
-    public static void parseConfig(String fileName) {
+    public Parser(String fileName) {
+        this.fileName = fileName;
+        parseConfig();
+    }
+
+    public void parseConfig() {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             try {
@@ -31,33 +37,45 @@ public class Parser {
                         database = value;
                     else if ("table".equals(name))
                         table = value;
+                    else
+                        throw new IOException("Wrong parameter!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                useDefaultConfig();
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Use default config");
+            useDefaultConfig();
         }
     }
 
-    public static String getUrl() {
+    private void useDefaultConfig() {
+        System.out.println("Use default config");
+        url = "jdbc:mysql://localhost:3306/chat";
+        user = "user";
+        password = "password";
+        database = "chat";
+        table = "messages";
+    }
+
+    public String getUrl() {
         return url;
     }
 
-    public static String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public static String getUser() {
+    public String getUser() {
         return user;
     }
 
-    public static String getDatabase() {
+    public String getDatabase() {
         return database;
     }
 
-    public static String getTable() {
+    public String getTable() {
         return table;
     }
 }
