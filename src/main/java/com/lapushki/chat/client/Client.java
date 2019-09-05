@@ -9,9 +9,10 @@ import java.util.Scanner;
 public class Client implements ConnectionListener {
 
     private static final String HOST = "localhost";
-    private static final int PORT = 8081;
+    private static final int PORT = 48884;
     private Connection connection;
     private Scanner scan;
+    private String userMessage;
 
     private Client(Scanner scan) {
         this.scan = scan;
@@ -22,9 +23,9 @@ public class Client implements ConnectionListener {
             connection = new Connection(this, HOST, PORT);
             connection.init();
             while (true) {
-                String msg = scan.nextLine();
-                if (validateInput(msg)) {
-                    connection.sendMessage(msg);
+                userMessage = scan.nextLine();
+                if (validateInput(userMessage)) {
+                    connection.sendMessage(userMessage);
                 }
             }
         } catch (IOException ex) {
@@ -64,8 +65,11 @@ public class Client implements ConnectionListener {
     @Override
     public void onReceiveString(Connection connection, String message) {
         if(message == null){
+            if(!userMessage.equals("/exit")) {
+                printMessage("Server is down, try again later!");
+            }
             connection.disconnect();
-            //todo: add a shutdown here
+            System.exit(0);
             return;
         }
         printMessage(message);

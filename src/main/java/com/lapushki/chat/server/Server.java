@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
 
-    private static final int PORT = 8081;
+    private static final int PORT = 48884;
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private static final MessageParser messageParser = new MessageParser();
     private static final MessageHandler messageHandler = new MessageHandler();

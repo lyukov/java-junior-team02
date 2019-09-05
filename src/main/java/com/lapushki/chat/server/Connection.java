@@ -46,9 +46,12 @@ public class Connection {
     }
 
     public void disconnect() {
-        if (!executorService.isTerminated())
+        if (!executorService.isTerminated()) {
             executorService.shutdownNow();
+        }
         try {
+            out.close();
+            in.close();
             socket.close();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
