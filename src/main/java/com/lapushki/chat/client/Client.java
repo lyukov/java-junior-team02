@@ -1,5 +1,6 @@
 package com.lapushki.chat.client;
 
+import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.ConnectionListener;
 
@@ -24,37 +25,15 @@ public class Client implements ConnectionListener {
             connection.init();
             while (true) {
                 userMessage = scan.nextLine();
-                if (validateInput(userMessage)) {
-                    connection.sendMessage(userMessage);
-                }
+                String msg = scan.nextLine();
+                //TODO catch exception form creating requestMessage
+                connection.sendMessage(new RequestMessage(userMessage));
             }
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
         } finally {
             connection.disconnect();
         }
-    }
-
-    private boolean validateInput(String msg) {
-        if (msg.length() == 0 ||
-                (msg.contains("/snd") && !msg.trim().contains(" ")) ||
-                (msg.contains("/chid") && !msg.trim().contains(" "))
-        ) {
-            printMessage("Message is empty");
-            return false;
-        }
-        if (msg.contains("/hist") || msg.contains("/exit")) {
-            return true;
-        }
-        if (!msg.contains("/chid") && !msg.contains("/snd")) {
-            printMessage("Unknown command");
-            return false;
-        }
-        if (msg.substring(msg.indexOf(" ") + 1).length() > 150) {
-            printMessage("Message is too big");
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -64,7 +43,7 @@ public class Client implements ConnectionListener {
 
     @Override
     public void onReceiveString(Connection connection, String message) {
-        if(message == null){
+        if (message == null) {
             if(!userMessage.equals("/exit")) {
                 printMessage("Server is down, try again later!");
             }

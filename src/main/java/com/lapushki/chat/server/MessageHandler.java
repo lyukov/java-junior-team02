@@ -1,11 +1,15 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.model.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
-public class MessageHandler {
+import static com.lapushki.chat.model.ResponseMessage.okResponseMessageWithCurrentTime;
+
+class MessageHandler {
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
     void handleChid(Connection connection) {
@@ -13,8 +17,8 @@ public class MessageHandler {
     }
 
     void handleExit(Connection connection) {
-        log.info("Client disconnected: " + connection.toString());
-        connection.sendMessage("Goodbye!");
+        log.info("Client disconnected: " + connection);
+        connection.sendMessage(okResponseMessageWithCurrentTime("Goodbye!"));
         connection.disconnect();
     }
 
@@ -23,15 +27,19 @@ public class MessageHandler {
         //connection.sendMessage(dao.getHistory());
     }
 
-    void handleMessage(Connection connection, Collection<Connection> connections, String message) {
+    void handleMessage(Connection connection, Collection<Connection> connections, RequestMessage message) {
+        ResponseMessage responseMessage = new ResponseMessage(message);
         //todo
         //if (dao.saveDataBase(connection, message))
-            sendMessageAllClients(message, connections);
+        sendMessageAllClients(responseMessage, connections);
     }
 
-    void sendMessageAllClients(String msg, Collection<Connection> connections) {
+    void sendMessageAllClients(ResponseMessage responseMessage, Collection<Connection> connections) {
         for (Connection connection : connections) {
-            connection.sendMessage(connection.getSocket().getInetAddress() + ": " + msg);
+            // TODO add IP adress to ResponseMessage
+            //connection.sendMessage(connection.getSocket().getInetAddress() + ": " + msg);
+
+            connection.sendMessage(responseMessage);
         }
     }
 }

@@ -1,30 +1,34 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.model.RequestMessage;
+
 import java.util.Collection;
 
 class MessageParser {
     private static final MessageHandler messageHandler = new MessageHandler();
 
-    void processMessage(Connection connection, Collection<Connection> connections, String message) {
-        String[] mess = message.split(" ");
-        switch (parseCommand(mess[0])) {
-            case EXIT:
+    void processMessage(Connection connection, Collection<Connection> connections, RequestMessage message) {
+        switch (message.command) {
+            //TODO use constants
+            case "/exit":
                 messageHandler.handleExit(connection);
                 break;
-            case SEND:
-                messageHandler.handleMessage(connection, connections, mess[1]);
+            case "/snd":
+                messageHandler.handleMessage(connection, connections, message);
                 break;
-            case HIST:
+            case "/hist":
                 messageHandler.handleHistory(connection);
                 break;
-            case CHID:
+            case "/chid":
                 messageHandler.handleChid(connection);
                 break;
             default:
+                //TODO throw exection or responce to client with an error.
                 break;
         }
     }
 
+    //TODO don't neet this if use constants
     Command parseCommand(String message) {
         Command newCommand = Command.DEFAULT;
         for (Command command: Command.values()) {

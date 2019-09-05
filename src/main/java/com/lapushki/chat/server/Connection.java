@@ -1,8 +1,11 @@
 package com.lapushki.chat.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.lapushki.chat.model.Message;
+
 import java.io.*;
 import java.net.Socket;
-import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,7 +15,8 @@ public class Connection {
     private BufferedReader in;
     private BufferedWriter out;
     private ExecutorService executorService;
-    private static final String LINE_BREAK = "\r\n";
+    private static final String LINE_BREAK = "\r\n"; //FIXME why not System.lineseparator() ??
+    private static final Gson gson = new GsonBuilder().create();
 
     public Connection(ConnectionListener listener, String ip, int port) throws IOException {
         this(listener, new Socket(ip, port));
@@ -30,9 +34,10 @@ public class Connection {
         executorService.execute(new InputStreamListener(this, listener, in));
     }
 
-    public void sendMessage(String msg) {
+    public void sendMessage(Message msg) {
+        String jsonMsg = gson.toJson(msg);
         try {
-            out.write(msg + LINE_BREAK);
+            out.write(jsonMsg + LINE_BREAK);
             out.flush();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
