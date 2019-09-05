@@ -9,12 +9,12 @@ import java.util.Date;
 public class ResponseMessage implements Message {
     private String status;
     public String message;
-    private String time; //FIXME why is time string?
+    private String time;
 
-    public ResponseMessage(String status, String message, String time) {
+    public ResponseMessage(String status, String message) {
         this.status = status;
         this.message = message;
-        this.time = time;
+        this.time = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date());
     }
 
     public ResponseMessage(RequestMessage message) {
@@ -24,7 +24,11 @@ public class ResponseMessage implements Message {
     }
 
     public static ResponseMessage okResponseMessageWithCurrentTime(String message) {
-        return new ResponseMessage(Message.STATUS_OK, message, "time");
+        return new ResponseMessage(Message.STATUS_OK, message);
+    }
+
+    public static ResponseMessage failResponseMessageWithCurrentTime(String message) {
+        return new ResponseMessage(Message.STATUS_ERROR, message);
     }
 
     @Override

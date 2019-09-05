@@ -1,5 +1,6 @@
 package com.lapushki.chat.client;
 
+import com.lapushki.chat.model.Constants;
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.server.Connection;
@@ -10,7 +11,8 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Client implements ConnectionListener {
-    private static final Pattern REGEX_PATTERN = Pattern.compile("(^\\/(snd|chid)\\s[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
+    private static final Pattern REGEX_PATTERN =
+            Pattern.compile("(^\\/(snd|chid)\\s[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
     private static final int MIN_LENGTH_MESSAGE = 4;
     private static final int MAX_LENGTH_MESSAGE = 150;
     private static final String HOST = "localhost";
@@ -31,16 +33,18 @@ public class Client implements ConnectionListener {
             while (true) {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
-                    //TODO catch exception form creating requestMessage
-                    connection.sendMessage(new RequestMessage(userMessage));
-                }
-                else
+                    try {
+                        connection.sendMessage(new RequestMessage(userMessage));
+                    } catch (IllegalArgumentException ex) {
+                        printMessage("Message exception: " + ex);
+                    }
+                } else
                     printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
             }
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
         } finally {
-            if (connection!=null)
+            if (connection != null)
                 connection.disconnect();
         }
     }
@@ -57,13 +61,13 @@ public class Client implements ConnectionListener {
     @Override
     public void onReceiveString(Connection connection, String message) {
         if (message == null) {
-            if(!userMessage.equals("/exit")) {
+            if (!userMessage.equals(Constants.EXIT)) {
                 printMessage("Server is down, try again later!");
             }
             System.exit(0);
             return;
         }
-        printMessage("\r" + message);
+        printMessage("\r" + message); //todo change message format, do not need to show all the info
     }
 
     @Override

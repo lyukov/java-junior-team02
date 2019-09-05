@@ -1,5 +1,6 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.model.Constants;
 import com.lapushki.chat.model.RequestMessage;
 
 import java.util.Collection;
@@ -9,32 +10,21 @@ class MessageParser {
 
     void processMessage(Connection connection, Collection<Connection> connections, RequestMessage message) {
         switch (message.command) {
-            //TODO use constants
-            case "/exit":
+            case Constants.EXIT:
                 messageHandler.handleExit(connection);
                 break;
-            case "/snd":
+            case Constants.SND:
                 messageHandler.handleMessage(connection, connections, message);
                 break;
-            case "/hist":
+            case Constants.HIST:
                 messageHandler.handleHistory(connection);
                 break;
-            case "/chid":
+            case Constants.CHID:
                 messageHandler.handleChid(connection);
                 break;
             default:
-                //TODO throw exection or responce to client with an error.
+                //todo throw exception or response to client with an error
                 break;
         }
-    }
-
-    //TODO don't neet this if use constants
-    Command parseCommand(String message) {
-        Command newCommand = Command.DEFAULT;
-        for (Command command: Command.values()) {
-            if (command.getMessage().equals(message))
-                newCommand = command;
-        }
-        return newCommand;
     }
 }

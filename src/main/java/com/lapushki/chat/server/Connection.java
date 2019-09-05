@@ -15,7 +15,7 @@ public class Connection {
     private BufferedReader in;
     private BufferedWriter out;
     private ExecutorService executorService;
-    private static final String LINE_BREAK = "\r\n"; //FIXME why not System.lineseparator() ??
+    private static final String LINE_BREAK = System.lineSeparator();
     private static final Gson gson = new GsonBuilder().create();
 
     public Connection(ConnectionListener listener, String ip, int port) throws IOException {

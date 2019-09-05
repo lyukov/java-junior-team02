@@ -52,8 +52,7 @@ public class Server implements ConnectionListener {
         connections.add(connection);
         ResponseMessage responseMessage = new ResponseMessage(
                 Message.STATUS_OK,
-                "New user connected: " + connection,
-                "time");
+                "New user connected: " + connection);
         messageHandler.sendMessageAllClients(responseMessage, connections);
     }
 
@@ -62,8 +61,8 @@ public class Server implements ConnectionListener {
         connections.remove(connection);
         ResponseMessage responseMessage = new ResponseMessage(
                 Message.STATUS_OK,
-                "User disconnected: " + connection,
-                "time");
+                "User disconnected: " + connection);
+        //todo remove repeat of the message after /exit command
         messageHandler.sendMessageAllClients(responseMessage, connections);
     }
 
