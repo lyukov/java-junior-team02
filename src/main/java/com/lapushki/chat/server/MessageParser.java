@@ -7,18 +7,25 @@ class MessageParser {
 
     void processMessage(Connection connection, Collection<Connection> connections, String message) {
         String[] mess = message.split(" ");
-        switch (mess[0]) {
-            case "/exit":
+        Command newCommand = Command.DEFAULT;
+        for (Command command: Command.values()){
+            if (command.getMessage().equals(mess[0]))
+                newCommand = command;
+        }
+        switch (newCommand) {
+            case EXIT:
                 messageHandler.handleExit(connection);
                 break;
-            case "/snd":
+            case SEND:
                 messageHandler.handleMessage(connection, connections, mess[1]);
                 break;
-            case "/hist":
+            case HIST:
                 messageHandler.handleHistory(connection);
                 break;
-            case "/chid":
+            case CHID:
                 messageHandler.handleChid(connection);
+                break;
+            default:
                 break;
         }
     }
