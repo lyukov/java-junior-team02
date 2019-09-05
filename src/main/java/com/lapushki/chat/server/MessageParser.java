@@ -7,12 +7,7 @@ class MessageParser {
 
     void processMessage(Connection connection, Collection<Connection> connections, String message) {
         String[] mess = message.split(" ");
-        Command newCommand = Command.DEFAULT;
-        for (Command command: Command.values()){
-            if (command.getMessage().equals(mess[0]))
-                newCommand = command;
-        }
-        switch (newCommand) {
+        switch (parseCommand(mess[0])) {
             case EXIT:
                 messageHandler.handleExit(connection);
                 break;
@@ -28,5 +23,15 @@ class MessageParser {
             default:
                 break;
         }
+    }
+
+
+    Command parseCommand(String message) {
+        Command newCommand = Command.DEFAULT;
+        for (Command command: Command.values()) {
+            if (command.getMessage().equals(message))
+                newCommand = command;
+        }
+        return newCommand;
     }
 }
