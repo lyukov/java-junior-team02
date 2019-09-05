@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Client implements ConnectionListener {
 
     private static final String HOST = "localhost";
-    private static final int PORT = 8081;
+    private static final int PORT = 48884;
     private Connection connection;
     private Scanner scan;
 
