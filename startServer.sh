@@ -1,1 +1,2 @@
-java -jar classes/artifacts/server_jar/team02.jar src/main/resources/META-INF/MANIFEST.MF
+#!/usr/bin/env bash
+java -cp target/team02-1.0-SNAPSHOT-jar-with-dependencies.jar com.lapushki.chat.server.Server

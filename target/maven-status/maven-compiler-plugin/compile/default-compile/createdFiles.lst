@@ -1,3 +1,13 @@
-com/lapushki/chat/db/Main.class
-com/lapushki/chat/server/Main.class
-com/lapushki/chat/client/Main.class
+com/lapushki/chat/server/MessageParser.class
+com/lapushki/chat/server/Server.class
+com/lapushki/chat/db/DB.class
+com/lapushki/chat/server/MessageHandler.class
+com/lapushki/chat/server/Command.class
+com/lapushki/chat/server/MessageParser$1.class
+com/lapushki/chat/model/ResponseMessage.class
+com/lapushki/chat/server/ConnectionListener.class
+com/lapushki/chat/client/Client.class
+com/lapushki/chat/server/Connection.class
+com/lapushki/chat/server/InputStreamListener.class
+com/lapushki/chat/model/RequestMessage.class
+com/lapushki/chat/model/Message.class
