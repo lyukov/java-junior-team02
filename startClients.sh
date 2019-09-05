@@ -1,4 +1,1 @@
-@ECHO OFF
-set CLASSPATH=.
-
-%JAVA_HOME%\bin\java com.lapushki.chat.client.Client
+java -jar classes/artifacts/client_jar/team02.jar src/main/resources/META-INF/MANIFEST_CLIENT.MF
