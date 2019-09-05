@@ -5,28 +5,15 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
  
-    <changeSet id="1" author="armen@gmail.com" context="createtable">
-        <createTable tableName="user">
-            <column name="id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="firstname" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastname" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="email" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="password" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-              <column name="address" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-           
-        </createTable>
+    <changeSet id="1" author="armen@gmail.com" context="create">
+        <sql>
+            create table messages (
+            user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            user_name VARCHAR(20) NOT NULL,
+            message VARCHAR(150) NOT NULL,
+            time VARCHAR(20) NOT NULL
+            );
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
