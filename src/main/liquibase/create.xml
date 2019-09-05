@@ -9,7 +9,7 @@
         <sql>
             create table messages (
             user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            user_name VARCHAR(20) NOT NULL,
+            user_name VARCHAR(50) NOT NULL,
             message VARCHAR(150) NOT NULL,
             time VARCHAR(20) NOT NULL
             );

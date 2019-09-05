@@ -30,16 +30,16 @@ public class RequestMessage implements Message {
 
     private boolean validateInput(String msg) {
         if (msg.length() == 0 ||
-                (msg.startsWith("/snd") && !msg.trim().contains(" ")) ||
-                (msg.startsWith("/chid") && !msg.trim().contains(" "))
+                (msg.startsWith(Constants.SND) && !msg.trim().contains(" ")) ||
+                (msg.startsWith(Constants.CHID) && !msg.trim().contains(" "))
         ) {
             System.out.println(msg);
             throw new IllegalArgumentException("Message is empty");
         }
-        if (msg.startsWith("/hist") || msg.startsWith("/exit")) {
+        if (msg.startsWith(Constants.HIST) || msg.startsWith(Constants.EXIT)) {
             return true;
         }
-        if (!msg.startsWith("/chid") && !msg.startsWith("/snd")) {
+        if (!msg.startsWith(Constants.CHID) && !msg.startsWith(Constants.SND)) {
             throw new IllegalArgumentException("Unknown command");
         }
         if (msg.substring(msg.indexOf(" ") + 1).length() > 150) {
