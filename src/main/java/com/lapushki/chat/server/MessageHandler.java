@@ -19,7 +19,7 @@ public class MessageHandler {
         connection.disconnect();
     }
 
-    void handleHistory(String[] messageArray) {
+    void handleHistory(Connection connection, String[] messageArray) {
         int pageNum = 0;
         if (messageArray.length == 2){
             pageNum = Integer.parseInt(messageArray[1]);
