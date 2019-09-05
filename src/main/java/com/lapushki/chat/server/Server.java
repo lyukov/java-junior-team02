@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
+
     private static final int PORT = 8081;
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private static final MessageParser messageParser = new MessageParser();
@@ -21,6 +22,7 @@ public class Server implements ConnectionListener {
             while (true) {
                 try {
                     Connection connection = new Connection(this, serverSocket.accept());
+                    connection.init();
                     log.info("New client: " + connection);
                 } catch (IOException e) {
                     log.error("Connection exception: " + e);

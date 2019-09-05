@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 
 public class MessageHandler {
-    private static final DaoDumomi dao = new DaoDumomi();
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
     void handleChid(Connection connection) {
@@ -29,7 +28,8 @@ public class MessageHandler {
     }
 
     void handleMessage(Connection connection, Collection<Connection> connections, String message) {
-        if (dao.saveDataBase(connection, message))
+        //todo
+        //if (dao.saveDataBase(connection, message))
             sendMessageAllClients(message, connections);
     }
 
