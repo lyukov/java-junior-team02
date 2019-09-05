@@ -12,8 +12,15 @@ public class DAO {
     private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
 
-    public DAO() {
+    public DAO(){
         connector = new SQLConnector();
+        connect = connector.getConnect();
+        parser = connector.getParser();
+        sourceTable = parser.getDatabase() + "." + parser.getTable();
+    }
+
+    public DAO(String configFile) {
+        connector = new SQLConnector(configFile);
         connect = connector.getConnect();
         parser = connector.getParser();
         sourceTable = parser.getDatabase() + "." + parser.getTable();
