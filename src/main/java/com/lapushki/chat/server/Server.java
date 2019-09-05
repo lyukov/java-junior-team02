@@ -11,6 +11,8 @@ import java.util.LinkedList;
 public class Server implements ConnectionListener {
     private static final int PORT = 8081;
     private static final Logger log = LoggerFactory.getLogger(Server.class);
+    private static final MessageParser messageParser = new MessageParser();
+    private static final MessageHandler messageHandler = new MessageHandler();
     private final Collection<Connection> connections = new LinkedList<>();
 
     private void start() {
@@ -35,19 +37,19 @@ public class Server implements ConnectionListener {
         if (message == null || message.isEmpty())
             return;
         log.info("New message: " + message + " from client: " + connection.toString());
-        MessageProcessor.processMessage(connection, connections, message);
+        messageParser.processMessage(connection, connections, message);
     }
 
     @Override
     public synchronized void onConnectionReady(Connection connection) {
         connections.add(connection);
-        MessageProcessor.sendMessageAllClients("New user connected: " + connection, connections);
+        messageHandler.sendMessageAllClients("New user connected: " + connection, connections);
     }
 
     @Override
     public synchronized void onDisconnect(Connection connection) {
         connections.remove(connection);
-        MessageProcessor.sendMessageAllClients("User disconnected: " + connection, connections);
+        messageHandler.sendMessageAllClients("User disconnected: " + connection, connections);
     }
 
     @Override
