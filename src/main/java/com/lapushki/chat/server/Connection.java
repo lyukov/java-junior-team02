@@ -24,6 +24,9 @@ public class Connection {
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    }
+
+    public void init() {
         executorService = Executors.newFixedThreadPool(1);
         executorService.execute(new InputStreamListener(this, listener, in));
     }

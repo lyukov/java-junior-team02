@@ -21,6 +21,7 @@ public class Server implements ConnectionListener {
             while (true) {
                 try {
                     Connection connection = new Connection(this, serverSocket.accept());
+                    connection.init();
                     log.info("New client: " + connection);
                 } catch (IOException e) {
                     log.error("Connection exception: " + e);
