@@ -1,5 +1,10 @@
 package com.lapushki.chat.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.lapushki.chat.model.Message;
+import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.model.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +19,7 @@ public class Server implements ConnectionListener {
     private static final MessageParser messageParser = new MessageParser();
     private static final MessageHandler messageHandler = new MessageHandler();
     private final Collection<Connection> connections = new LinkedList<>();
+    private static final Gson gson = new GsonBuilder().create();
 
     private void start() {
         log.info("Server running...");
@@ -38,19 +44,28 @@ public class Server implements ConnectionListener {
         if (message == null || message.isEmpty())
             return;
         log.info("New message: " + message + " from client: " + connection.toString());
-        messageParser.processMessage(connection, connections, message);
+        RequestMessage requestMessage = gson.fromJson(message, RequestMessage.class);
+        messageParser.processMessage(connection, connections, requestMessage);
     }
 
     @Override
     public synchronized void onConnectionReady(Connection connection) {
         connections.add(connection);
-        messageHandler.sendMessageAllClients("New user connected: " + connection, connections);
+        ResponseMessage responseMessage = new ResponseMessage(
+                Message.STATUS_OK,
+                "New user connected: " + connection,
+                "time");
+        messageHandler.sendMessageAllClients(responseMessage, connections);
     }
 
     @Override
     public synchronized void onDisconnect(Connection connection) {
         connections.remove(connection);
-        messageHandler.sendMessageAllClients("User disconnected: " + connection, connections);
+        ResponseMessage responseMessage = new ResponseMessage(
+                Message.STATUS_OK,
+                "User disconnected: " + connection,
+                "time");
+        messageHandler.sendMessageAllClients(responseMessage, connections);
     }
 
     @Override
