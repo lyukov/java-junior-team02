@@ -1,10 +1,6 @@
 package com.lapushki.chat.db;
 
-import com.lapushki.chat.model.RequestMessage;
-
 import java.sql.*;
-
-import static java.lang.System.exit;
 
 public class SQLConnector implements AutoCloseable {
     private Connection connect = null;

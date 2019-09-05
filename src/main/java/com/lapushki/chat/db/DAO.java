@@ -26,19 +26,20 @@ public class DAO {
         sourceTable = parser.getDatabase() + "." + parser.getTable();
     }
 
-    public void insertMessage(String userName, String message, String time) {
+    public boolean insertMessage(String userName, String message, String time) {
         try {
             preparedStatement = connect
                     .prepareStatement("INSERT INTO " + sourceTable + " (user_id, user_name, message, time) " +
                             "VALUES (default, ?, ?, ?)");
-
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, message);
             preparedStatement.setString(3, time);
             preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DatabaseException(sqlEx);
         }
+        return true;
     }
 
     public void insertMessage(RequestMessage message) {
@@ -53,12 +54,12 @@ public class DAO {
             preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DatabaseException(sqlEx);
         }
     }
 
     public String getAllMessages() {
         String result;
-
         try {
             preparedStatement = connect
                     .prepareStatement("SELECT user_name, message, time FROM " + sourceTable);
@@ -66,9 +67,8 @@ public class DAO {
             result =  getStringFromResultSet(resultSet);
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
-            result = "ERRRRRROR";
+            throw new DatabaseException(sqlEx);
         }
-
         return result;
     }
 
@@ -76,9 +76,10 @@ public class DAO {
         try {
             preparedStatement = connect
                     .prepareStatement("DELETE FROM " + sourceTable);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DatabaseException(sqlEx);
         }
     }
 
@@ -92,27 +93,24 @@ public class DAO {
                             "WHERE user_name = ?");
             preparedStatement.setString(1, userName);
             resultSet = preparedStatement.executeQuery();
-
             count =  resultSet.getInt("result");
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
-            count = -1;
+            throw new DatabaseException(sqlEx);
         }
-
         return count;
     }
 
     String getStringFromResultSet(ResultSet resultSet) throws SQLException {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         while (resultSet.next()) {
             String user_name = resultSet.getString("user_name");
             String message = resultSet.getString("message");
-            Date time = resultSet.getDate("time");
-            result += "User: " + user_name;
-            result += "; message: " + message;
-            result += "; date: " + time + "\n";
+            String time = resultSet.getString("time");
+            result.append("User: ").append(user_name);
+            result.append("; message: ").append(message);
+            result.append("; date: ").append(time).append(System.lineSeparator());
         }
-
-        return result;
+        return result.toString();
     }
 }
