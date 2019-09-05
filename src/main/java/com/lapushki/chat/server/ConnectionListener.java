@@ -1,7 +1,6 @@
 package com.lapushki.chat.server;
 
 public interface ConnectionListener {
-
     void onConnectionReady(Connection connection);
 
     void onReceiveString(Connection connection, String message);

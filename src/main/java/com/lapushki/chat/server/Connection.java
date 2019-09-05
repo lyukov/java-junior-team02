@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Connection {
-
     private Socket socket;
     private ConnectionListener listener;
     private BufferedReader in;

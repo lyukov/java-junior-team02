@@ -31,7 +31,6 @@ public class Client implements ConnectionListener {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
                     connection.sendMessage(userMessage);
-                    if (userMessage.equals("/exit")) System.exit(0);
                 }
                 else
                     printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
@@ -55,7 +54,13 @@ public class Client implements ConnectionListener {
 
     @Override
     public void onReceiveString(Connection connection, String message) {
-        if(message == null) return;
+        if(message == null){
+            if(!userMessage.equals("/exit")) {
+                printMessage("Server is down, try again later!");
+            }
+            System.exit(0);
+            return;
+        }
         printMessage(message);
     }
 
