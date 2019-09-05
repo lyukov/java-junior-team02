@@ -1,4 +1,4 @@
-package com.lapushki.chat.java;
+package com.lapushki.chat.db;
 
 import com.lapushki.chat.db.SQLConnector;
 import org.junit.Test;
