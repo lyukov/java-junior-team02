@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class Client implements ConnectionListener {
 
-    private static final Pattern REGEX_PATTERN = Pattern.compile("(^\\/(snd|chid)\\s+[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
+    private static final Pattern REGEX_PATTERN = Pattern.compile("(^\\/(snd|chid)\\s[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
     private static final int MIN_LENGTH_MESSAGE = 4;
     private static final int MAX_LENGTH_MESSAGE = 150;
     private static final String HOST = "localhost";
@@ -31,20 +31,21 @@ public class Client implements ConnectionListener {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
                     connection.sendMessage(userMessage);
+                    if (userMessage.equals("/exit")) System.exit(0);
                 }
-                else {
+                else
                     printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
-                }
             }
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
         } finally {
-            if (connection!=null) connection.disconnect();
+            if (connection!=null)
+                connection.disconnect();
         }
     }
 
     private boolean validateInput(String msg) {
-        return msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
+        return msg != null &&msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
     }
 
     @Override
@@ -54,9 +55,7 @@ public class Client implements ConnectionListener {
 
     @Override
     public void onReceiveString(Connection connection, String message) {
-        if(message == null){
-            return;
-        }
+        if(message == null) return;
         printMessage(message);
     }
 
