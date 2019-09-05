@@ -18,7 +18,7 @@ class MessageParser {
                 messageHandler.handleHistory(connection);
                 break;
             case "/chid":
-                messageHandler.handleChid(connection);
+                messageHandler.handleChid(connection, mess[1]);
                 break;
         }
     }

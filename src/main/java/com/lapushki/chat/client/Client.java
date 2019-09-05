@@ -4,6 +4,7 @@ import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.ConnectionListener;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Client implements ConnectionListener {
@@ -11,6 +12,9 @@ public class Client implements ConnectionListener {
     private static final int PORT = 8081;
     private Connection connection;
     private Scanner scan;
+    private String name;
+    private boolean kostilForNicknameSetting = false;
+    private  boolean answered = true;
 
     private Client(Scanner scan) {
         this.scan = scan;
@@ -19,6 +23,21 @@ public class Client implements ConnectionListener {
     private void start() {
         try {
             connection = new Connection(this, HOST, PORT);
+
+            printMessage("choose unique nickname for session");
+            String nick = "";
+            while (!kostilForNicknameSetting) {
+                if (answered && !kostilForNicknameSetting) {
+                    answered = false;
+                    nick = scan.nextLine();
+                    setNickname(nick);
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException ex) {}
+                }
+            }
+            name = nick.replaceAll("/chid ", "");
+
             while (true) {
                 String msg = scan.nextLine();
                 if (validateInput(msg)) {
@@ -29,6 +48,15 @@ public class Client implements ConnectionListener {
             printMessage("Connection exception: " + ex);
         } finally {
             connection.disconnect();
+        }
+    }
+
+    private void setNickname(String name) {
+        if(!name.contains("/chid")) {
+            printMessage("to set nickname start with /chid");
+        }
+        else {
+            connection.sendMessage(name);
         }
     }
 
@@ -66,6 +94,12 @@ public class Client implements ConnectionListener {
             //todo: add a shutdown here
             return;
         }
+        if(Objects.equals(message, "server code 1234567")){
+            System.out.println("name changed");
+            kostilForNicknameSetting = true;
+            return;
+        }
+        answered = true;
         printMessage(message);
     }
 

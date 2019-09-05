@@ -5,12 +5,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
+import static com.lapushki.chat.server.Server.userNames;
+
 public class MessageHandler {
     private static final DaoDumomi dao = new DaoDumomi();
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
-    void handleChid(Connection connection) {
-        //todo
+    void handleChid(Connection connection, String message) {
+        if( !userNames.add(message)) {
+            connection.sendMessage("nickname " + message + " is taken by another user. Choose another nickname." );
+        }
+        else {
+            connection.sendMessage("server code 1234567");
+            connection.sendMessage("your nickname for this session is " + message );
+        }
     }
 
     void handleExit(Connection connection) {
