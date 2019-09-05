@@ -6,15 +6,15 @@ import java.sql.*;
  * Created by kate-c on 04/09/2019.
  */
 public class SQLConnector implements AutoCloseable {
-    // JDBC variables for opening and managing connection
     private Connection connect = null;
     private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
+    private String sourceTable;
 
     public SQLConnector(String fileName) {
         try {
             Parser.parseConfig(fileName);
-
+            sourceTable = "'" + Parser.getDatabase() + "'.'" + Parser.getTable() + "'";
             connect = DriverManager.getConnection(Parser.getUrl(), Parser.getUser(), Parser.getPassword());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -24,7 +24,7 @@ public class SQLConnector implements AutoCloseable {
     public void insertMessage(String userName, String message, String time) {
         try {
             preparedStatement = connect
-                    .prepareStatement("INSERT INTO messages (user_id, user_name, message, time) " +
+                    .prepareStatement("INSERT INTO " + sourceTable + " (user_id, user_name, message, time) " +
                             "VALUES (default, ?, ?, ?)");
 
             preparedStatement.setString(1, userName);
@@ -41,7 +41,7 @@ public class SQLConnector implements AutoCloseable {
 
         try {
             preparedStatement = connect
-                    .prepareStatement("SELECT user_name, message, time FROM messages");
+                    .prepareStatement("SELECT user_name, message, time FROM " + sourceTable);
             resultSet = preparedStatement.executeQuery();
             result =  getStringFromResultSet(resultSet);
         } catch (SQLException sqlEx) {
@@ -55,7 +55,7 @@ public class SQLConnector implements AutoCloseable {
     void deleteAllMesseges() {
         try {
             preparedStatement = connect
-                    .prepareStatement("DELETE FROM messages");
+                    .prepareStatement("DELETE FROM " + sourceTable);
             resultSet = preparedStatement.executeQuery();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
@@ -68,7 +68,7 @@ public class SQLConnector implements AutoCloseable {
         try {
             preparedStatement = connect
                     .prepareStatement("SELECT COUNT(*) as result " +
-                            "FROM messages  " +
+                            "FROM " + sourceTable  + " " +
                             "WHERE user_name = ?");
             preparedStatement.setString(1, userName);
             resultSet = preparedStatement.executeQuery();

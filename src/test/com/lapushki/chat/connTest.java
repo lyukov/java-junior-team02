@@ -1,8 +1,7 @@
+package com.lapushki.chat;
+
 import com.lapushki.chat.db.SQLConnector;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.sql.*;
 
 public class connTest {
 
