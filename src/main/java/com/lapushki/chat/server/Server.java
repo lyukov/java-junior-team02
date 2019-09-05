@@ -9,13 +9,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
-
     private static final int PORT = 8081;
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final Collection<Connection> connections = new LinkedList<>();
-    private static DaoDumomi dao = new DaoDumomi();
 
-    private Server() {
+    private void start() {
         log.info("Server running...");
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
@@ -34,54 +32,22 @@ public class Server implements ConnectionListener {
 
     @Override
     public synchronized void onReceiveString(Connection connection, String message) {
-        if(message == null || message.isEmpty())
+        if (message == null || message.isEmpty())
             return;
         log.info("New message: " + message + " from client: " + connection.toString());
-        //TODO: refactor
-        String[] mess = message.split(" ");
-        switch (mess[0]) {
-            case "/exit":
-                handleExit(connection);
-                break;
-            case "/snd":
-                handleMessage(connection, mess[1]);
-                break;
-            case "/hist":
-                handleHistory(connection);
-                break;
-        }
-    }
-
-    private void handleExit(Connection connection) {
-        log.info("Client disconnected: " + connection.toString());
-        connection.disconnect();
-    }
-
-    private void handleHistory(Connection connection) {
-  //      connection.sendMessage(dao.getHistory());
-    }
-
-    private void handleMessage(Connection connection, String message) {
-        if (dao.saveDataBase(connection, message))
-            this.sendMessageAllClients(message);
-    }
-
-    private void sendMessageAllClients(String msg) {
-        for (Connection connection : connections) {
-            connection.sendMessage(connection.getSocket().getInetAddress() + ": " + msg);
-        }
+        MessageProcessor.processMessage(connection, connections, message);
     }
 
     @Override
     public synchronized void onConnectionReady(Connection connection) {
         connections.add(connection);
-        sendMessageAllClients("New user connected: " + connection);
+        MessageProcessor.sendMessageAllClients("New user connected: " + connection, connections);
     }
 
     @Override
     public synchronized void onDisconnect(Connection connection) {
         connections.remove(connection);
-        sendMessageAllClients("User disconnected: " + connection);
+        MessageProcessor.sendMessageAllClients("User disconnected: " + connection, connections);
     }
 
     @Override
@@ -90,6 +56,7 @@ public class Server implements ConnectionListener {
     }
 
     public static void main(String[] args) {
-        new Server();
+        Server server = new Server();
+        server.start();
     }
 }

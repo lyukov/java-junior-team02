@@ -7,25 +7,28 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Client implements ConnectionListener {
-
     private static final String HOST = "localhost";
     private static final int PORT = 8081;
+    private Connection connection;
+    private Scanner scan;
 
-    private Client() {
-        Connection connection;
-        Scanner scan = new Scanner(System.in);
+    private Client(Scanner scan) {
+        this.scan = scan;
+    }
+
+    private void start() {
         try {
-            String msg = "";
             connection = new Connection(this, HOST, PORT);
-            while (!msg.equals("\\exit")) {
-                msg = scan.nextLine();
+            while (true) {
+                String msg = scan.nextLine();
                 if (validateInput(msg)) {
                     connection.sendMessage(msg);
                 }
             }
-            connection.disconnect();
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
+        } finally {
+            connection.disconnect();
         }
     }
 
@@ -37,10 +40,10 @@ public class Client implements ConnectionListener {
             printMessage("Message is empty");
             return false;
         }
-        if (msg.contains("/hist")) {
+        if (msg.contains("/hist") || msg.contains("/exit")) {
             return true;
         }
-        if (!msg.contains("/chid") & !msg.contains("/snd")){
+        if (!msg.contains("/chid") && !msg.contains("/snd")) {
             printMessage("Unknown command");
             return false;
         }
@@ -53,11 +56,16 @@ public class Client implements ConnectionListener {
 
     @Override
     public void onConnectionReady(Connection connection) {
-        printMessage("Connection opened");
+        printMessage("Hello and welcome to the best chat ever! To quit the chat type \"/exit\"");
     }
 
     @Override
     public void onReceiveString(Connection connection, String message) {
+        if(message == null){
+            connection.disconnect();
+            //todo: add a shutdown here
+            return;
+        }
         printMessage(message);
     }
 
@@ -76,6 +84,7 @@ public class Client implements ConnectionListener {
     }
 
     public static void main(String[] args) {
-        new Client();
+        Client client = new Client(new Scanner(System.in));
+        client.start();
     }
 }
