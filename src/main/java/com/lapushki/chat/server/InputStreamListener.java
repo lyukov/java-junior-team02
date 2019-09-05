@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class InputStreamListener implements Runnable {
-
     private Connection connection;
     private ConnectionListener listener;
     private BufferedReader reader;

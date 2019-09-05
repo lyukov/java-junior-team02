@@ -1,7 +1,6 @@
 package com.lapushki.chat.server;
 
 public enum Command {
-
     EXIT("/exit"),
     SEND("/snd"),
     HIST("/hist"),

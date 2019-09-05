@@ -3,7 +3,6 @@ package com.lapushki.chat.server;
 import java.util.Collection;
 
 class MessageParser {
-
     private static final MessageHandler messageHandler = new MessageHandler();
 
     void processMessage(Connection connection, Collection<Connection> connections, String message) {

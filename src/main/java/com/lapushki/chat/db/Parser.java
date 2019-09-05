@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Parser {
-
     private final String DELIMITER = ";";
     private String url;
     private String user;
