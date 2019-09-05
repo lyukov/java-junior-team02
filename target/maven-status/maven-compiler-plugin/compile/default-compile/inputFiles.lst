@@ -1,3 +1,12 @@
-/Users/kate-c/Desktop/! ДБ/JavaSchool/project/java-junior-team02/src/main/java/com/lapushki/chat/db/Main.java
-/Users/kate-c/Desktop/! ДБ/JavaSchool/project/java-junior-team02/src/main/java/com/lapushki/chat/client/Main.java
-/Users/kate-c/Desktop/! ДБ/JavaSchool/project/java-junior-team02/src/main/java/com/lapushki/chat/server/Main.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/Connection.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/model/Message.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/model/RequestMessage.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/client/Client.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/MessageParser.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/Command.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/model/ResponseMessage.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/InputStreamListener.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/MessageHandler.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/ConnectionListener.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/db/DB.java
+/Users/yusuf/Documents/work/java-junior-team02/src/main/java/com/lapushki/chat/server/Server.java
