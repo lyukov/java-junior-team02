@@ -50,9 +50,10 @@ public class Connection {
             executorService.shutdownNow();
         }
         try {
+            if (!socket.isClosed())
+                socket.close();
             out.close();
             in.close();
-            socket.close();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
         }
