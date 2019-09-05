@@ -1,5 +1,6 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.db.DAO;
 import com.lapushki.chat.db.DatabaseException;
 import com.lapushki.chat.db.SQLConnector;
 import com.lapushki.chat.model.RequestMessage;
@@ -16,11 +17,11 @@ import static com.lapushki.chat.model.ResponseMessage.okResponseMessageWithCurre
 
 class MessageHandler {
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
-    private static SQLConnector connector;
+    private static DAO dao;
 
     static {
         try {
-            connector = new SQLConnector();
+            dao = new DAO();
         } catch (DatabaseException e) {
             log.error("Database is dead!!!");
         }
@@ -39,7 +40,7 @@ class MessageHandler {
 
     void handleHistory(Connection connection) {
         log.info("Hist request: " + connection.toString());
-        String message = connector.getAllMessages();
+        String message = dao.getAllMessages();
         connection.sendMessage(okResponseMessageWithCurrentTime(message));
     }
 
@@ -47,7 +48,7 @@ class MessageHandler {
         log.info("New message request: " + connection.toString() + " " + requestMessage.toString());
         ResponseMessage responseMessage = new ResponseMessage(requestMessage);
         String time = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date());
-        if (connector.insertMessage(connection.toString(), requestMessage.message, time)) {
+        if (dao.insertMessage(connection.toString(), requestMessage.message, time)) {
             sendMessageAllClients(responseMessage, connections);
         } else {
             connection.sendMessage(failResponseMessageWithCurrentTime(requestMessage.message));
