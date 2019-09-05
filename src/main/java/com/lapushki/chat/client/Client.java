@@ -4,6 +4,7 @@ import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.ConnectionListener;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,9 @@ public class Client implements ConnectionListener {
     private Connection connection;
     private Scanner scan;
     private String userMessage;
+    private String name;
+    private boolean kostilForNicknameSetting = false;
+    private  boolean answered = true;
 
     private Client(Scanner scan) {
         this.scan = scan;
@@ -27,6 +31,21 @@ public class Client implements ConnectionListener {
         try {
             connection = new Connection(this, HOST, PORT);
             connection.init();
+
+            printMessage("choose unique nickname for session");
+            String nick = "";
+            while (!kostilForNicknameSetting) {
+                if (answered && !kostilForNicknameSetting) {
+                    answered = false;
+                    nick = scan.nextLine();
+                    setNickname(nick);
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException ex) {}
+                }
+            }
+            name = nick.replaceAll("/chid ", "");
+
             while (true) {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
@@ -40,6 +59,15 @@ public class Client implements ConnectionListener {
         } finally {
             if (connection!=null)
                 connection.disconnect();
+        }
+    }
+
+    private void setNickname(String name) {
+        if(!name.contains("/chid")) {
+            printMessage("to set nickname start with /chid");
+        }
+        else {
+            connection.sendMessage(name);
         }
     }
 
@@ -61,6 +89,12 @@ public class Client implements ConnectionListener {
             System.exit(0);
             return;
         }
+        if(Objects.equals(message, "server code 1234567")){
+            System.out.println("name changed");
+            kostilForNicknameSetting = true;
+            return;
+        }
+        answered = true;
         printMessage(message);
     }
 
