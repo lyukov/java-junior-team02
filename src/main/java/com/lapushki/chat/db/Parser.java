@@ -10,6 +10,8 @@ public class Parser {
     private static String url;
     private static String user;
     private static String password;
+    private static String database;
+    private static String table;
 
     public static void parseConfig(String fileName) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -17,20 +19,25 @@ public class Parser {
             try {
                 while ((line = br.readLine()) != null) {
                     String[] values = line.split(DELIMITER);
-                    String name = values[0];
-                    String value = values[1];
+                    String name = values[0].trim().toLowerCase();
+                    String value = values[1].trim();
                     if ("url".equals(name))
                         url = value;
                     else if ("user".equals(name))
                         user = value;
                     else if ("password".equals(name))
                         password = value;
+                    else if ("database".equals(name))
+                        database = value;
+                    else if ("table".equals(name))
+                        table = value;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Use default config");
         }
     }
 
@@ -45,4 +52,13 @@ public class Parser {
     public static String getUser() {
         return user;
     }
+
+    public static String getDatabase() {
+        return database;
+    }
+
+    public static String getTable() {
+        return table;
+    }
 }
+
