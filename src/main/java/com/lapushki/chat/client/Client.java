@@ -16,6 +16,7 @@ public class Client implements ConnectionListener {
 
     private Client(Scanner scan) {
         this.scan = scan;
+        this.userMessage = "";
     }
 
     private void start() {
