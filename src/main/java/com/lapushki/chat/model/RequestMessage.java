@@ -1,6 +1,6 @@
 package com.lapushki.chat.model;
 
-public class RequestMessage implements Message{
+public class RequestMessage implements Message {
     public String command;
     public String message;
 

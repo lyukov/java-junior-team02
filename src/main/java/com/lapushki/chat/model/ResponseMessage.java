@@ -13,6 +13,6 @@ public class ResponseMessage implements Message{
 
     @Override
     public String toString() {
-        return status.equals("OK") ? String.format("[%s] %s", time, message) : String.format("[ERROR] %s", message);
+        return status.equals("OK") ? String.format("%s - [%s]", message, time) : String.format("[ERROR] %s", message);
     }
 }

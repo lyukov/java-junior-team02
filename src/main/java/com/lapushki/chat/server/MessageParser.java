@@ -1,5 +1,9 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.model.ResponseMessage;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 class MessageParser {
@@ -12,7 +16,7 @@ class MessageParser {
                 messageHandler.handleExit(connection);
                 break;
             case SEND:
-                messageHandler.handleMessage(connection, connections, mess[1]);
+                messageHandler.handleMessage(connection, connections, createResponseMessage(mess[1]));
                 break;
             case HIST:
                 messageHandler.handleHistory(connection);
@@ -25,7 +29,12 @@ class MessageParser {
         }
     }
 
-    Command parseCommand(String message) {
+    private ResponseMessage createResponseMessage(String message) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return new ResponseMessage("OK", message, LocalDateTime.now().format(formatter));
+    }
+
+    private Command parseCommand(String message) {
         Command newCommand = Command.DEFAULT;
         for (Command command: Command.values()) {
             if (command.getMessage().equals(message))

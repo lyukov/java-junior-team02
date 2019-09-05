@@ -1,5 +1,6 @@
 package com.lapushki.chat.client;
 
+import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.ConnectionListener;
 
@@ -30,7 +31,8 @@ public class Client implements ConnectionListener {
             while (true) {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
-                    connection.sendMessage(userMessage);
+                    String[] userMessageSplit = userMessage.split(" ");
+                    connection.sendMessage(new RequestMessage(userMessageSplit[0], userMessageSplit[1]));
                 }
                 else
                     printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");

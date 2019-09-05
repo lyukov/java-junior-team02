@@ -1,7 +1,5 @@
 package com.lapushki.chat.server;
 
-
-
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -47,13 +45,13 @@ public class Server implements ConnectionListener {
     @Override
     public synchronized void onConnectionReady(Connection connection) {
         connections.add(connection);
-        messageHandler.sendMessageAllClients("New user connected: " + connection, connections);
+        //messageHandler.sendMessageAllClients("New user connected: " + connection, connections);
     }
 
     @Override
     public synchronized void onDisconnect(Connection connection) {
         connections.remove(connection);
-        messageHandler.sendMessageAllClients("User disconnected: " + connection, connections);
+        //messageHandler.sendMessageAllClients("User disconnected: " + connection, connections);
     }
 
     @Override
@@ -61,7 +59,7 @@ public class Server implements ConnectionListener {
         log.error("Connection exception: " + ex);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Server server = new Server();
         server.start();
     }
