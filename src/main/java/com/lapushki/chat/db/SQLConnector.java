@@ -46,6 +46,44 @@ public class SQLConnector implements AutoCloseable {
         }
     }
 
+    void deleteMessage(String userName, String message, String time) {
+        try {
+            preparedStatement = connect
+                    .prepareStatement("DELETE FROM " + sourceTable +
+                            " WHERE user_name=?" +
+                            " AND message=?" +
+                            " AND time=?");
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, message);
+            preparedStatement.setString(3, time);
+            preparedStatement.executeUpdate();
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
+    }
+
+    public String getSpecificMessage(String userName, String message, String time) {
+        String result;
+
+        try {
+            preparedStatement = connect
+                    .prepareStatement("SELECT user_name, message, time FROM " + sourceTable +
+                            " WHERE user_name=?" +
+                            " AND message=?" +
+                            " AND time=?");
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, message);
+            preparedStatement.setString(3, time);
+            resultSet = preparedStatement.executeQuery();
+            result =  getStringFromResultSet(resultSet);
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+            result = "ERRRRRROR";
+        }
+
+        return result;
+    }
+
     public String getAllMessages() {
         String result;
 
@@ -62,11 +100,11 @@ public class SQLConnector implements AutoCloseable {
         return result;
     }
 
-    void deleteAllMesseges() {
+    public void deleteAllMesseges() {
         try {
             preparedStatement = connect
                     .prepareStatement("DELETE FROM " + sourceTable);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
         }
