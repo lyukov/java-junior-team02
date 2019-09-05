@@ -44,7 +44,7 @@ public class Client implements ConnectionListener {
     }
 
     private boolean validateInput(String msg) {
-        return msg != null &&msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
+        return msg != null && msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
     }
 
     @Override

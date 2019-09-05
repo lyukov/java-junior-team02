@@ -43,8 +43,6 @@ public class Connection {
         return socket;
     }
 
-    public ConnectionListener getListener() { return listener; }
-
     public void disconnect() {
         listener.onDisconnect(this);
         if (!executorService.isTerminated()) {
