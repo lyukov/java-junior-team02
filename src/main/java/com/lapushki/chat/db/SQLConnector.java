@@ -7,8 +7,8 @@ import java.sql.*;
  */
 public class SQLConnector implements AutoCloseable {
     // JDBC variables for opening and managing connection
-    private Connection connect;
-    private ResultSet resultSet;
+    private Connection connect = null;
+    private ResultSet resultSet = null;
     private PreparedStatement preparedStatement = null;
 
     public SQLConnector(String fileName) {
@@ -24,7 +24,8 @@ public class SQLConnector implements AutoCloseable {
     public void insertMessage(String userName, String message, String time) {
         try {
             preparedStatement = connect
-                    .prepareStatement("insert into messages (user_id, user_name, message, time) values (default, ?, ?, ?)");
+                    .prepareStatement("INSERT INTO messages (user_id, user_name, message, time) " +
+                            "VALUES (default, ?, ?, ?)");
 
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, message);
@@ -40,7 +41,7 @@ public class SQLConnector implements AutoCloseable {
 
         try {
             preparedStatement = connect
-                    .prepareStatement("SELECT user_name, message, time from messages");
+                    .prepareStatement("SELECT user_name, message, time FROM messages");
             resultSet = preparedStatement.executeQuery();
             result =  getStringFromResultSet(resultSet);
         } catch (SQLException sqlEx) {
@@ -49,6 +50,36 @@ public class SQLConnector implements AutoCloseable {
         }
 
         return result;
+    }
+
+    void deleteAllMesseges() {
+        try {
+            preparedStatement = connect
+                    .prepareStatement("DELETE FROM messages");
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
+    }
+
+    int countMessagesSentByGivenPerson(String userName) {
+        int count;
+
+        try {
+            preparedStatement = connect
+                    .prepareStatement("SELECT COUNT(*) as result " +
+                            "FROM messages  " +
+                            "WHERE user_name = ?");
+            preparedStatement.setString(1, userName);
+            resultSet = preparedStatement.executeQuery();
+
+            count =  resultSet.getInt("result");
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+            count = -1;
+        }
+
+        return count;
     }
 
     public void close() {
