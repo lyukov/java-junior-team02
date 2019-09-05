@@ -40,6 +40,12 @@ public class Parser {
                     else
                         throw new IOException("Wrong parameter!");
                 }
+                if (url == null || url.isEmpty() ||
+                        user == null || user.isEmpty() ||
+                        password == null || password.isEmpty() ||
+                        database == null || database.isEmpty() ||
+                        table == null || table.isEmpty())
+                    useDefaultConfig();
             } catch (IOException e) {
                 e.printStackTrace();
                 useDefaultConfig();
