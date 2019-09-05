@@ -19,7 +19,11 @@ public class MessageHandler {
         connection.disconnect();
     }
 
-    void handleHistory(Connection connection) {
+    void handleHistory(String[] messageArray) {
+        int pageNum = 0;
+        if (messageArray.length == 2){
+            pageNum = Integer.parseInt(messageArray[1]);
+        }
         //todo
         //connection.sendMessage(dao.getHistory());
     }
