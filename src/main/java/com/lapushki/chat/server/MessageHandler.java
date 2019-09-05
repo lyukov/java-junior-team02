@@ -1,12 +1,11 @@
 package com.lapushki.chat.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
 public class MessageHandler {
-    private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
+    private static final Logger log = Logger.getLogger(MessageHandler.class);
 
     void handleChid(Connection connection) {
         //todo
