@@ -5,8 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.lapushki.chat.model.Message;
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.model.ResponseMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,7 +14,7 @@ import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
     private static final int PORT = 48884;
-    private static final Logger log = LoggerFactory.getLogger(Server.class);
+    private static final Logger log = Logger.getLogger(Server.class);
     private static final MessageParser messageParser = new MessageParser();
     private static final MessageHandler messageHandler = new MessageHandler();
     private final Collection<Connection> connections = new LinkedList<>();

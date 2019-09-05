@@ -63,7 +63,7 @@ public class Client implements ConnectionListener {
             System.exit(0);
             return;
         }
-        printMessage(message);
+        printMessage("\r" + message);
     }
 
     @Override
