@@ -1,4 +1,4 @@
-package com.lapushki.chat.java;
+package com.lapushki.chat.db;
 
 import com.lapushki.chat.db.Parser;
 import org.junit.Assert;

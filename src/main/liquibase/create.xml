@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
  
-    <changeSet id="1" author="armen@gmail.com" context="create">
+    <changeSet id="1" author="admin" context="create">
         <sql>
             create table messages (
             user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
