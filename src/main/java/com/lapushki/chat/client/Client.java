@@ -5,13 +5,11 @@ import com.lapushki.chat.server.ConnectionListener;
 
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Client implements ConnectionListener {
 
     private static final Pattern REGEX_PATTERN = Pattern.compile("(^\\/(snd|chid)\\s+[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
-    private static final String INCORRECT_MESSAGE = "Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"";
     private static final int MIN_LENGTH_MESSAGE = 4;
     private static final int MAX_LENGTH_MESSAGE = 150;
     private static final String HOST = "localhost";
@@ -35,7 +33,7 @@ public class Client implements ConnectionListener {
                     connection.sendMessage(userMessage);
                 }
                 else {
-                    printMessage(INCORRECT_MESSAGE);
+                    printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
                 }
             }
         } catch (IOException ex) {
@@ -57,8 +55,6 @@ public class Client implements ConnectionListener {
     @Override
     public void onReceiveString(Connection connection, String message) {
         if(message == null){
-            connection.disconnect();
-            System.exit(0);
             return;
         }
         printMessage(message);
