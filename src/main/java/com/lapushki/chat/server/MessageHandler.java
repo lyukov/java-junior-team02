@@ -14,7 +14,6 @@ public class MessageHandler {
 
     void handleExit(Connection connection) {
         log.info("Client disconnected: " + connection.toString());
-        connection.sendMessage("Goodbye!");
         connection.disconnect();
     }
 
