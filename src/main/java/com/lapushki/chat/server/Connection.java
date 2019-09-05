@@ -49,7 +49,8 @@ public class Connection {
         if (!executorService.isTerminated())
             executorService.shutdownNow();
         try {
-            socket.close();
+            if (!socket.isClosed())
+                socket.close();
         } catch (IOException e) {
             listener.onException(Connection.this, e);
         }

@@ -5,55 +5,44 @@ import com.lapushki.chat.server.ConnectionListener;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Client implements ConnectionListener {
 
+    private static final Pattern REGEX_PATTERN = Pattern.compile("(^\\/(snd|chid)\\s+[A-z|0-9|А-я]+)|^(\\/(hist|exit))");
+    private static final String INCORRECT_MESSAGE = "Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"";
+    private static final int MIN_LENGTH_MESSAGE = 4;
+    private static final int MAX_LENGTH_MESSAGE = 150;
     private static final String HOST = "localhost";
     private static final int PORT = 48884;
     private Connection connection;
-    private Scanner scan;
+    private Scanner scanner;
 
-    private Client(Scanner scan) {
-        this.scan = scan;
-    }
+    private Client(Scanner scanner) { this.scanner = scanner; }
 
     private void start() {
         try {
             connection = new Connection(this, HOST, PORT);
             connection.init();
             while (true) {
-                String msg = scan.nextLine();
+                String msg = scanner.nextLine();
                 if (validateInput(msg)) {
                     connection.sendMessage(msg);
+                }
+                else {
+                    printMessage(INCORRECT_MESSAGE);
                 }
             }
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
         } finally {
-            connection.disconnect();
+            if (connection!=null) connection.disconnect();
         }
     }
 
     private boolean validateInput(String msg) {
-        if (msg.length() == 0 ||
-                (msg.contains("/snd") && !msg.trim().contains(" ")) ||
-                (msg.contains("/chid") && !msg.trim().contains(" "))
-        ) {
-            printMessage("Message is empty");
-            return false;
-        }
-        if (msg.contains("/hist") || msg.contains("/exit")) {
-            return true;
-        }
-        if (!msg.contains("/chid") && !msg.contains("/snd")) {
-            printMessage("Unknown command");
-            return false;
-        }
-        if (msg.substring(msg.indexOf(" ") + 1).length() > 150) {
-            printMessage("Message is too big");
-            return false;
-        }
-        return true;
+        return msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
     }
 
     @Override
