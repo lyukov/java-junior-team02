@@ -3,6 +3,7 @@ package com.lapushki.chat.server;
 import com.lapushki.chat.db.DAO;
 import com.lapushki.chat.db.DatabaseException;
 import com.lapushki.chat.db.SQLConnector;
+import com.lapushki.chat.model.Message;
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.model.ResponseMessage;
 import org.slf4j.Logger;
@@ -31,12 +32,12 @@ public class MessageHandler {
 
     synchronized void handleChid(Connection connection, String message) {
         log.info("Change id request: " + connection.toString());
-        if( !(userNames.add(message))) {
-            connection.sendMessage("nickname " + message + " is taken by another user. Choose another nickname." );
-        }
-        else {
-            connection.sendMessage("server code 1234567");
-            connection.sendMessage("your nickname for this session is " + message );
+        if (!(userNames.add(message))) {
+            connection.sendMessage(
+                    failResponseMessageWithCurrentTime("Nickname " + message + " is taken by another user. Choose another nickname."));
+        } else {
+            connection.sendMessage(
+                    okResponseMessageWithCurrentTime("Your nickname for this session is " + message));
         }
     }
 
