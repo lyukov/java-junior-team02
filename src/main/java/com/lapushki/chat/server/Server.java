@@ -1,77 +1,44 @@
 package com.lapushki.chat.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.lapushki.chat.model.Message;
-import com.lapushki.chat.model.RequestMessage;
-import com.lapushki.chat.model.ResponseMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.net.Socket;
 
-public class Server implements ConnectionListener {
-    private static final int PORT = 48884;
-    private static final Logger log = LoggerFactory.getLogger(Server.class);
-    private static final MessageParser messageParser = new MessageParser();
-    private static final MessageHandler messageHandler = new MessageHandler();
-    private final Collection<Connection> connections = new LinkedList<>();
-    private static final Gson gson = new GsonBuilder().create();
-    static Collection<String> userNames = new HashSet<>();
+public class Server {
+    private ServerSocket connectionListener;
+    private SessionFactory sessionFactory;
+    private SessionStore sessionStore;
 
-    private void start() {
-        log.info("Server running...");
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+    public Server(SessionFactory sessionFactory, SessionStore sessionStore) {
+        this.sessionFactory = sessionFactory;
+        this.sessionStore = sessionStore;
+    }
+
+    void startServer() {
+        try (ServerSocket serverSocket = new ServerSocket(8082)) {
+            connectionListener = serverSocket;
+            registerShutdownHook();
             while (true) {
-                try {
-                    Connection connection = new Connection(this, serverSocket.accept());
-                    connection.init();
-                    log.info("New client: " + connection);
-                } catch (IOException e) {
-                    log.error("Connection exception: " + e);
-                }
+                Socket socket = connectionListener.accept();
+                Session session = sessionFactory.createSession(socket);
+                sessionStore.register(session);
             }
-        } catch (IOException ex) {
-            log.error("Server exception: " + ex);
-            throw new RuntimeException(ex);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public synchronized void onReceiveString(Connection connection, String message) {
-        if (message == null || message.isEmpty())
-            return;
-        log.info("New message: " + message + " from client: " + connection.toString());
-        RequestMessage requestMessage = gson.fromJson(message, RequestMessage.class);
-        messageParser.processMessage(connection, connections, requestMessage);
-    }
-
-    @Override
-    public synchronized void onConnectionReady(Connection connection) {
-        connections.add(connection);
-    }
-
-    @Override
-    public synchronized void onDisconnect(Connection connection) {
-        connections.remove(connection);
-        ResponseMessage responseMessage = new ResponseMessage(
-                Message.STATUS_OK,
-                "User disconnected: " + connection);
-        //todo remove repeat of the message after /exit command
-        messageHandler.sendMessageAllClients(responseMessage, connections);
-    }
-
-    @Override
-    public synchronized void onException(Connection connection, Exception ex) {
-        log.error("Connection exception: " + ex);
-    }
-
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.start();
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (connectionListener != null) {
+                try {
+                    sessionStore.sendToAll("Server died ;<");
+                    sessionStore.closeAll();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Server closed");
+        }));
     }
 }
