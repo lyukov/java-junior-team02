@@ -3,7 +3,6 @@ package com.lapushki.chat.server;
 import com.lapushki.chat.Common.CommandType;
 import com.lapushki.chat.server.commands.*;
 import com.lapushki.chat.server.history.HistoryAccessObject;
-import com.lapushki.chat.server.Saver;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,17 +10,14 @@ import java.util.Map;
 public class ChatCommandFactory implements CommandFactory {
     private final Parser parser;
     private final RoomStore roomStore;
-    private final Saver saver;
     private final Identificator identificator;
     private final HistoryAccessObject history;
 
     public ChatCommandFactory(Parser parser,
                               RoomStore roomStore,
-                              Saver saver,
                               Identificator identificator, HistoryAccessObject history) {
         this.parser = parser;
         this.roomStore = roomStore;
-        this.saver = saver;
         this.identificator = identificator;
         this.history = history;
     }
@@ -62,11 +58,11 @@ public class ChatCommandFactory implements CommandFactory {
 
     private SendCommand createSendCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String message = fieldMap.get("msg");
-        return new SendCommand(connection, message, saver, timestamp);
+        return new SendCommand(connection, message, timestamp, history);
     }
 
     private ChangeIdCommand createChangeIdCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String newNickname = fieldMap.get("msg");
-        return new ChangeIdCommand(connection, identificator, newNickname, timestamp, saver);
+        return new ChangeIdCommand(connection, identificator, newNickname, timestamp, history);
     }
 }
