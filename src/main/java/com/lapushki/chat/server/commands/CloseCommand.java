@@ -1,6 +1,7 @@
 package com.lapushki.chat.server.commands;
 
 import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.Decorator;
 import com.lapushki.chat.server.Room;
 
 public class CloseCommand implements Command {
@@ -21,7 +22,7 @@ public class CloseCommand implements Command {
     private void sendLeaveMessage(Room room) {
         String nickname = connection.getUsername();
         if (nickname != null) {
-            String message = nickname + " has left the chat";
+            String message = Decorator.leftMessage(nickname);
             room.sendToAll(message);
         }
     }
