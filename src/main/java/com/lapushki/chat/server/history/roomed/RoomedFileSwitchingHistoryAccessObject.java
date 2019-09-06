@@ -40,8 +40,11 @@ public class RoomedFileSwitchingHistoryAccessObject implements RoomedHistory{
     public void save(String message, LocalDateTime dateTime, String roomName) throws IOException {
         History history;
         synchronized (mutex) {
+
             history = roomsAccessObjects.get(roomName);
+
             if (history == null) {
+                createDirectoryIfNotExist(roomName);
                 history = new HistoryAccessObject(roomName);
                 roomsAccessObjects.put(roomName, history);
             }
