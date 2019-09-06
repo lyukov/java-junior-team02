@@ -17,6 +17,7 @@ public class Connection {
     private ExecutorService executorService;
     private static final String LINE_BREAK = System.lineSeparator();
     private static final Gson gson = new GsonBuilder().create();
+    private String userId;
 
     public Connection(ConnectionListener listener, String ip, int port) throws IOException {
         this(listener, new Socket(ip, port));
@@ -60,5 +61,13 @@ public class Connection {
         } catch (IOException e) {
             listener.onException(Connection.this, e);
         }
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserId(){
+        return userId;
     }
 }

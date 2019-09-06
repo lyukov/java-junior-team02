@@ -53,10 +53,6 @@ public class Server implements ConnectionListener {
     @Override
     public synchronized void onConnectionReady(Connection connection) {
         connections.add(connection);
-        ResponseMessage responseMessage = new ResponseMessage(
-                Message.STATUS_OK,
-                "New user connected: " + connection);
-        messageHandler.sendMessageAllClients(responseMessage, connections);
     }
 
     @Override
