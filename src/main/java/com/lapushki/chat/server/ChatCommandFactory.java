@@ -2,7 +2,7 @@ package com.lapushki.chat.server;
 
 import com.lapushki.chat.Common.CommandType;
 import com.lapushki.chat.server.commands.*;
-import com.lapushki.chat.server.history.HistoryAccessObject;
+import com.lapushki.chat.server.history.roomed.RoomedHistory;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,11 +11,11 @@ public class ChatCommandFactory implements CommandFactory {
     private final Parser parser;
     private final RoomStore roomStore;
     private final Identificator identificator;
-    private final HistoryAccessObject history;
+    private final RoomedHistory history;
 
     public ChatCommandFactory(Parser parser,
                               RoomStore roomStore,
-                              Identificator identificator, HistoryAccessObject history) {
+                              Identificator identificator, RoomedHistory history) {
         this.parser = parser;
         this.roomStore = roomStore;
         this.identificator = identificator;
