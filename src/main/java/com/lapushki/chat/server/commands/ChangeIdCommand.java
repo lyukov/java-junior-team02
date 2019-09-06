@@ -47,7 +47,9 @@ public class ChangeIdCommand implements Command {
         }
         String decoratedMessage = Decorator.decorate(message, timestamp);
         Room room = connection.getRoom();
-        room.sendToAll(decoratedMessage);
-        history.save(decoratedMessage, timestamp, room.getTitle());
+        if (room != null) {
+            room.sendToAll(decoratedMessage);
+            history.save(decoratedMessage, timestamp, room.getTitle());
+        }
     }
 }

@@ -17,7 +17,7 @@ public class ServerFramework {
         ConnectionPool connectionPool = new ConnectionPool();
         RoomedHistory history = new RoomedFileSwitchingHistoryAccessObject();
         CommandFactory commandFactory = new ChatCommandFactory(parser, roomStore, identificator, history);
-        ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
+        ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory, logger);
         logger.log(Level.INFO, Decorator.startServerMess());
         new Server(roomStore, connectionFactory, connectionPool, logger).startServer();
     }
