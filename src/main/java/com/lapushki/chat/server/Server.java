@@ -3,17 +3,22 @@ package com.lapushki.chat.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
     private RoomStore roomStore;
     private ServerSocket connectionListener;
     private ConnectionFactory connectionFactory;
     private ConnectionPool connectionPool;
+    private final Logger logger;
 
-    public Server(RoomStore roomStore, ConnectionFactory connectionFactory, ConnectionPool connectionPool) {
+    public Server(RoomStore roomStore, ConnectionFactory connectionFactory,
+                  ConnectionPool connectionPool, Logger logger) {
         this.roomStore = roomStore;
         this.connectionFactory = connectionFactory;
         this.connectionPool = connectionPool;
+        this.logger = logger;
     }
 
     void startServer() {
@@ -26,7 +31,7 @@ public class Server {
                 connectionPool.register(connection);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, Decorator.getException(), e);
         }
     }
 
@@ -34,13 +39,14 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (connectionListener != null) {
                 try {
-                    roomStore.sendToAll("Server died ;<");
+                    roomStore.sendToAll(Decorator.getServerDied());
                     connectionPool.closeAll();
+                    connectionListener.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, Decorator.getShuttDownEx(), e);
                 }
             }
-            System.out.println("Server closed");
+            logger.log(Level.INFO, Decorator.getServerClosed());
         }));
     }
 }
