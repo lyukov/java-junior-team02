@@ -99,7 +99,7 @@ public class Client implements ConnectionListener {
         ){
             nameChosen = true;
         }
-        printMessage("\r" + message); //todo change message format, do not need to show all the info
+        printMessage("\r" + new Gson().fromJson(message, ResponseMessage.class));
     }
 
     @Override
