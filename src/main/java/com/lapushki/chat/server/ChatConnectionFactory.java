@@ -11,7 +11,7 @@ public class ChatSessionFactory implements SessionFactory {
     }
 
     @Override
-    public Session createSession(Socket socket) throws IOException {
+    public Connection createSession(Socket socket) throws IOException {
         final BufferedReader in = new BufferedReader(
                 new InputStreamReader(
                         new BufferedInputStream(
@@ -20,6 +20,6 @@ public class ChatSessionFactory implements SessionFactory {
                 new OutputStreamWriter(
                         new BufferedOutputStream(
                                 socket.getOutputStream())));
-        return new ChatSession(null, socket, in, out, commandFactory);
+        return new ChatConnection(null, socket, in, out, commandFactory);
     }
 }

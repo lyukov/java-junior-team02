@@ -7,13 +7,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ChatSessionStore implements SessionStore {
-    private Collection<Session> sessions;
+public class ChatGroup implements Group {
+    private Collection<Connection> connections;
     private final ExecutorService executorService;
     private final ReadWriteLock rwl;
 
-    public ChatSessionStore() {
-        sessions = new ArrayList<>();
+    public ChatGroup() {
+        connections = new ArrayList<>();
         this.executorService = Executors.newCachedThreadPool();
         rwl = new ReentrantReadWriteLock(false);
     }
@@ -22,39 +22,39 @@ public class ChatSessionStore implements SessionStore {
     public void sendToAll(String message) {
         try {
             rwl.readLock().lock();
-            sessions.forEach(s -> s.send(message));
+            connections.forEach(s -> s.send(message));
         } finally {
             rwl.readLock().unlock();
         }
     }
 
     @Override
-    public void register(Session session) {
+    public void register(Connection connection) {
         try {
             rwl.writeLock().lock();
-            sessions.add(session);
+            connections.add(connection);
         } finally {
             rwl.writeLock().unlock();
         }
-        executorService.execute(session);
+        executorService.execute(connection);
     }
 
     @Override
-    public void remove(Session session) {
+    public void remove(Connection connection) {
         try {
             rwl.writeLock().lock();
-            sessions.remove(session);
+            connections.remove(connection);
         } finally {
             rwl.writeLock().unlock();
         }
-        session.close();
+        connection.close();
     }
 
     @Override
     public void closeAll() {
         try {
             rwl.readLock().lock();
-            sessions.forEach(Session::close);
+            connections.forEach(Connection::close);
         } finally {
             rwl.readLock().unlock();
         }

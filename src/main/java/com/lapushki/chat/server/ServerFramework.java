@@ -11,11 +11,11 @@ public class ServerLauncher {
         Parser parser = new Parser("\0", ":");
         Saver saver = new SwitchingFileSaver();
         Identificator identificator = new Identificator();
-        SessionStore sessionStore = new ChatSessionStore();
+        Group group = new ChatGroup();
         HistoryAccessObject history = new HistoryAccessObject();
-        CommandFactory commandFactory = new ChatCommandFactory(parser, sessionStore, saver, identificator, history);
-        SessionFactory sessionFactory = new ChatSessionFactory(commandFactory);
+        CommandFactory commandFactory = new ChatCommandFactory(parser, group, saver, identificator, history);
+        ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
         System.out.println("Server starts");
-        new Server(sessionFactory, sessionStore).startServer();
+        new Server(connectionFactory, group).startServer();
     }
 }
