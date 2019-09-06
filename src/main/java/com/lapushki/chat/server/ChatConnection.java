@@ -37,7 +37,9 @@ public class ChatConnection implements Connection {
         ) {
             while (!isClosed) {
                 String message = myIn.readLine();
-                processRequest(message);
+                if (message != null) {
+                    processRequest(message);
+                }
             }
         } catch (IOException e) {
             //TODO add logger
