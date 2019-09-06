@@ -29,6 +29,7 @@ public class HistoryAccessObject implements History {
     public HistoryAccessObject(String folder) throws IOException{
         saver = new SwitchingFileSaver(folder);
         reader = new SwitchingFileReader(folder);
+        readWriteLock = new ReentrantReadWriteLock();
     }
 
     @Override
