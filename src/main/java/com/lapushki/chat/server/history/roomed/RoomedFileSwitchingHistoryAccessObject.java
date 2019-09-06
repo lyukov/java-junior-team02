@@ -33,15 +33,18 @@ public class RoomedFileSwitchingHistoryAccessObject implements RoomedHistory{
 
     @Override
     public List<String> getHistory(String roomName) {
-        return null;
+        return roomsAccessObjects.get(roomName).getHistory();
     }
 
     @Override
     public void save(String message, LocalDateTime dateTime, String roomName) throws IOException {
         History history;
         synchronized (mutex) {
+
             history = roomsAccessObjects.get(roomName);
+
             if (history == null) {
+                createDirectoryIfNotExist(roomName);
                 history = new HistoryAccessObject(roomName);
                 roomsAccessObjects.put(roomName, history);
             }

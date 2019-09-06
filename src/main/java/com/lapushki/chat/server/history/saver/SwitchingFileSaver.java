@@ -34,8 +34,11 @@ public class SwitchingFileSaver extends FileSaver {
 
 
     public SwitchingFileSaver(String folder) throws IOException {
-        this();
         this.name = folder + "/" + this.name;
+        dateTime = LocalDateTime.now();
+        this.open(dateTime);
+        dateTimeSize = dateTime.toString().length();
+        this.sizeLimit = defaultSizeLimit;
     }
 
     public SwitchingFileSaver(int sizeLimit) throws IOException {

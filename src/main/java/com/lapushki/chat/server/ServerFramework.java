@@ -7,7 +7,7 @@ import com.lapushki.chat.server.history.roomed.RoomedHistory;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/*
 public class ServerFramework {
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser("\0", ":");
@@ -22,3 +22,4 @@ public class ServerFramework {
         new Server(roomStore, connectionFactory, connectionPool, logger).startServer();
     }
 }
+*/
