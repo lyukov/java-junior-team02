@@ -76,7 +76,7 @@ public class DAO {
         try {
             preparedStatement = connect
                     .prepareStatement("DELETE FROM " + sourceTable);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
         }
