@@ -12,6 +12,12 @@ public class Decorator {
     private static String openBracket = "[";
     private static String closeBracket = "] ";
     private static String delim = ": ";
+    private static String startServerMessage = "Server starts";
+    private static String serverDied = "Server died ;<";
+    private static String serverClosed = "Server closed";
+    private static String shuttDownEx = "Exception in Shutdown Hook";
+    private static String Exception = "Exception is thrown";
+
     public static String leftMessage(String message) {
         return message + leaveMessage;
     }
@@ -38,5 +44,24 @@ public class Decorator {
     }
     public static String getchatHistoryEndMessage(){
         return chatHistoryEndMessage;
+    }
+    public static String startServerMess(){
+        return startServerMessage;
+    }
+
+    public static String getServerDied() {
+        return serverDied;
+    }
+
+    public static String getServerClosed() {
+        return serverClosed;
+    }
+
+    public static String getShuttDownEx() {
+        return shuttDownEx;
+    }
+
+    public static String getException() {
+        return Exception;
     }
 }

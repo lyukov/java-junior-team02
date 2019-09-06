@@ -21,7 +21,9 @@ public class ChatConnection implements Connection {
     private Room room;
     private boolean isClosed = false;
 
-    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory) {
+    ChatConnection(String username, Socket socket,
+                   BufferedReader socketIn, PrintWriter socketOut,
+                   CommandFactory commandFactory) {
         this.username = username;
         this.socket = socket;
         this.socketIn = socketIn;
