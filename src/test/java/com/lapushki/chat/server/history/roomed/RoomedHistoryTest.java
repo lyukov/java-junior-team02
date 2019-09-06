@@ -32,10 +32,11 @@ public class RoomedHistoryTest {
         sut.save(message1, time, roomName1);
         sut.save(message2, time, roomName2);
 
-        BufferedReader reader1 = new BufferedReader(new FileReader("./resources/History/room1"
-                + SwitchingFileSaver.fileNameFormat("history", time, 0)));
-        BufferedReader reader2 = new BufferedReader(new FileReader("./resources/History/room2"
-                + SwitchingFileSaver.fileNameFormat("history", time, 0)));
+        String n1 = SwitchingFileSaver.fileNameFormat("room1/history", time, 0);
+        String n2 = SwitchingFileSaver.fileNameFormat("room2/history", time, 0);
+
+        BufferedReader reader1 = new BufferedReader(new FileReader(n1));
+        BufferedReader reader2 = new BufferedReader(new FileReader(n2));
 
         assertThat(reader1.readLine()).isEqualTo(message1);
         assertThat(reader1.readLine()).isNull();
