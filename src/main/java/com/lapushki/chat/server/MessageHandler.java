@@ -2,7 +2,7 @@ package com.lapushki.chat.server;
 
 import com.lapushki.chat.db.DAO;
 import com.lapushki.chat.db.DatabaseException;
-import com.lapushki.chat.db.SQLConnector;
+import com.lapushki.chat.model.Message;
 import com.lapushki.chat.model.RequestMessage;
 import com.lapushki.chat.model.ResponseMessage;
 import org.slf4j.Logger;
@@ -14,10 +14,12 @@ import java.util.Date;
 
 import static com.lapushki.chat.model.ResponseMessage.failResponseMessageWithCurrentTime;
 import static com.lapushki.chat.model.ResponseMessage.okResponseMessageWithCurrentTime;
+import static com.lapushki.chat.server.Server.userNames;
 
-class MessageHandler {
+public class MessageHandler {
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
     private static DAO dao;
+    private String userId;
 
     static {
         try {
@@ -27,9 +29,21 @@ class MessageHandler {
         }
     }
 
-    void handleChid(Connection connection) {
+    synchronized void handleChid(Connection connection, Collection<Connection> connections, String message) {
         log.info("Change id request: " + connection.toString());
-        //todo add change id
+        if (!(userNames.add(message))) {
+            connection.sendMessage(
+                    failResponseMessageWithCurrentTime("Nickname " + message + " is taken by another user. Choose another nickname."));
+        } else {
+            userId = message;
+            connection.setUserId(userId);
+            connection.sendMessage(
+                    okResponseMessageWithCurrentTime("Your nickname for this session is " + message));
+            ResponseMessage responseMessage = new ResponseMessage(
+                    Message.STATUS_OK,
+                    "New user connected: " + connection.getUserId());
+            sendMessageAllClients(responseMessage, connections);
+        }
     }
 
     void handleExit(Connection connection) {
@@ -48,7 +62,7 @@ class MessageHandler {
         log.info("New message request: " + connection.toString() + " " + requestMessage.toString());
         ResponseMessage responseMessage = new ResponseMessage(requestMessage);
         String time = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date());
-        if (dao.insertMessage(connection.toString(), requestMessage.message, time)) {
+        if (dao.insertMessage(userId, requestMessage.message, time)) {
             sendMessageAllClients(responseMessage, connections);
         } else {
             connection.sendMessage(failResponseMessageWithCurrentTime(requestMessage.message));

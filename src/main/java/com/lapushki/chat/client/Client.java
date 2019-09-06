@@ -1,8 +1,10 @@
 package com.lapushki.chat.client;
 
+import com.google.gson.Gson;
 import com.lapushki.chat.model.Constants;
+import com.lapushki.chat.model.Message;
 import com.lapushki.chat.model.RequestMessage;
-import com.lapushki.chat.model.RequestMessage;
+import com.lapushki.chat.model.ResponseMessage;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.ConnectionListener;
 
@@ -20,6 +22,7 @@ public class Client implements ConnectionListener {
     private Connection connection;
     private Scanner scan;
     private String userMessage;
+    private boolean nameChosen = false;
 
     private Client(Scanner scan) {
         this.scan = scan;
@@ -30,17 +33,7 @@ public class Client implements ConnectionListener {
         try {
             connection = new Connection(this, HOST, PORT);
             connection.init();
-            while (true) {
-                userMessage = scan.nextLine();
-                if (validateInput(userMessage)) {
-                    try {
-                        connection.sendMessage(new RequestMessage(userMessage));
-                    } catch (IllegalArgumentException ex) {
-                        printMessage("Message exception: " + ex);
-                    }
-                } else
-                    printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
-            }
+            askForInput();
         } catch (IOException ex) {
             printMessage("Connection exception: " + ex);
         } finally {
@@ -49,13 +42,45 @@ public class Client implements ConnectionListener {
         }
     }
 
+    private void askForInput(){
+        boolean firstChangeId = false;
+        while (true) {
+            while (!nameChosen) {
+                userMessage = scan.nextLine();
+                if(nameChosen){
+                    firstChangeId = true;
+                    break;
+                }
+                if(!userMessage.contains("/chid")) {
+                    printMessage("to set nickname start with /chid");
+                }
+                else {
+                    connection.sendMessage(new RequestMessage(userMessage));
+                }
+            }
+            if(!firstChangeId) {
+                userMessage = scan.nextLine();
+            }
+            firstChangeId = false;
+            if (validateInput(userMessage)) {
+                try {
+                    connection.sendMessage(new RequestMessage(userMessage));
+                } catch (IllegalArgumentException ex) {
+                    printMessage("Message exception: " + ex);
+                }
+            } else
+                printMessage("Incorrect!\nMin 4 and max 150 symbols!\nAvailable command:\n\"/snd [message]\"\n\"/chid [message]\"\n\"/hist\"\n\"/exit\"");
+        }
+    }
+
     private boolean validateInput(String msg) {
-        return msg != null && msg.length() >= MIN_LENGTH_MESSAGE && msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
+        return msg != null && msg.length() >= MIN_LENGTH_MESSAGE &&
+                msg.length() <= MAX_LENGTH_MESSAGE && REGEX_PATTERN.matcher(msg).find();
     }
 
     @Override
     public void onConnectionReady(Connection connection) {
-        printMessage("Hello and welcome to the best chat ever! To quit the chat type \"/exit\"");
+        printMessage("Hello and welcome to the best chat ever! Choose unique nickname for session. To quit the chat type \"/exit\"");
     }
 
     @Override
@@ -66,6 +91,13 @@ public class Client implements ConnectionListener {
             }
             System.exit(0);
             return;
+        }
+        ResponseMessage responseMessage = new Gson().fromJson(message, ResponseMessage.class);
+        if(!nameChosen &&
+                responseMessage.status.equals(Message.STATUS_OK) &&
+                responseMessage.message.contains("nickname")
+        ){
+            nameChosen = true;
         }
         printMessage("\r" + message); //todo change message format, do not need to show all the info
     }

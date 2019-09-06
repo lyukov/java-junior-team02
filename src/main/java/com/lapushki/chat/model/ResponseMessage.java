@@ -7,7 +7,7 @@ import java.util.Date;
  * Message from Server to Client
  */
 public class ResponseMessage implements Message {
-    private String status;
+    public String status;
     public String message;
     private String time;
 
