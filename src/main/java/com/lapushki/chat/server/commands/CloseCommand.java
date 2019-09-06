@@ -13,6 +13,7 @@ public class CloseCommand implements Command {
     @Override
     public void execute() {
         Room room = connection.getRoom();
+        if (room == null) return;
         room.remove(connection);
         sendLeaveMessage(room);
     }

@@ -20,6 +20,6 @@ public class ChatConnectionFactory implements ConnectionFactory {
                 new OutputStreamWriter(
                         new BufferedOutputStream(
                                 socket.getOutputStream())));
-        return new ChatConnection(null, socket, in, out, commandFactory, group);
+        return new ChatConnection(null, socket, in, out, commandFactory);
     }
 }

@@ -4,7 +4,7 @@ import com.lapushki.chat.server.Identificator;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.OccupiedNicknameException;
-import com.lapushki.chat.server.history.saver.Saver;
+import com.lapushki.chat.server.Saver;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

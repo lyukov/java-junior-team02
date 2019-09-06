@@ -2,6 +2,7 @@ package com.lapushki.chat.server;
 
 import com.lapushki.chat.server.commands.Command;
 import com.lapushki.chat.server.exceptions.ChatException;
+import com.lapushki.chat.server.exceptions.NotInTheRoomException;
 import com.lapushki.chat.server.exceptions.OccupiedNicknameException;
 import com.lapushki.chat.server.exceptions.UnidentifiedUserException;
 
@@ -84,6 +85,8 @@ public class ChatConnection implements Connection {
             processException(e, "First command should be /chid");
         } catch (OccupiedNicknameException e) {
             processException(e, "This nickname is occupied, try another one");
+        } catch (NotInTheRoomException e) {
+            processException(e, "Please enter the room before writing");
         } catch (ChatException e) {
             processException(e, "Some error has occurred");
         }

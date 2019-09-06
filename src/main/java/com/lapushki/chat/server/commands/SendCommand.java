@@ -2,6 +2,8 @@ package com.lapushki.chat.server.commands;
 
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.Room;
+import com.lapushki.chat.server.exceptions.ChatException;
+import com.lapushki.chat.server.exceptions.NotInTheRoomException;
 import com.lapushki.chat.server.exceptions.UnidentifiedUserException;
 import com.lapushki.chat.server.Saver;
 
@@ -23,10 +25,13 @@ public class SendCommand implements Command {
     }
 
     @Override
-    public void execute() throws UnidentifiedUserException, IOException {
+    public void execute() throws ChatException, IOException {
         checkUsername();
         String decoratedMessage = decorate(message);
         Room room = connection.getRoom();
+        if (room == null) {
+            throw new NotInTheRoomException();
+        }
         room.sendToAll(decoratedMessage);
         saver.save(decoratedMessage, timestamp);
     }
