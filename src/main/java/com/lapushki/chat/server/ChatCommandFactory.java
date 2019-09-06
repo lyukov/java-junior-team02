@@ -1,5 +1,6 @@
 package com.lapushki.chat.server;
 
+import com.lapushki.chat.Common.CommandType;
 import com.lapushki.chat.server.commands.*;
 import com.lapushki.chat.server.history.HistoryAccessObject;
 import com.lapushki.chat.server.Saver;
