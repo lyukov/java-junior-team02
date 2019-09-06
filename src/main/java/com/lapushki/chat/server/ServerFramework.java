@@ -9,11 +9,10 @@ import java.io.IOException;
 public class ServerFramework {
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser("\0", ":");
-        Saver saver = new SwitchingFileSaver();
         Identificator identificator = new Identificator();
         Room room = new ChatRoom(title);
         HistoryAccessObject history = new HistoryAccessObject();
-        CommandFactory commandFactory = new ChatCommandFactory(parser, room, saver, identificator, history);
+        CommandFactory commandFactory = new ChatCommandFactory(parser, room, identificator, history);
         ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
         System.out.println("Server starts");
         new Server(connectionFactory, room).startServer();

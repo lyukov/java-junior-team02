@@ -5,7 +5,7 @@ import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.ChatException;
 import com.lapushki.chat.server.exceptions.NotInTheRoomException;
 import com.lapushki.chat.server.exceptions.UnidentifiedUserException;
-import com.lapushki.chat.server.Saver;
+import com.lapushki.chat.server.history.History;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,14 +14,14 @@ import java.time.format.DateTimeFormatter;
 public class SendCommand implements Command {
     private final Connection connection;
     private final String message;
-    private final Saver saver;
     private final LocalDateTime timestamp;
+    private final History history;
 
-    public SendCommand(Connection connection, String message, Saver saver, LocalDateTime timestamp) {
+    public SendCommand(Connection connection, String message, LocalDateTime timestamp, History history) {
         this.connection = connection;
         this.message = message;
-        this.saver = saver;
         this.timestamp = timestamp;
+        this.history = history;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SendCommand implements Command {
             throw new NotInTheRoomException();
         }
         room.sendToAll(decoratedMessage);
-        saver.save(decoratedMessage, timestamp);
+        history.save(decoratedMessage, timestamp);
     }
 
     private String decorate(String message) {
