@@ -4,8 +4,7 @@ import com.lapushki.chat.server.Identificator;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.OccupiedNicknameException;
-import com.lapushki.chat.server.history.History;
-import com.lapushki.chat.server.history.saver.Saver;
+import com.lapushki.chat.server.history.roomed.RoomedHistory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,10 +15,10 @@ public class ChangeIdCommand implements Command {
     private final Identificator identificator;
     private final String newNickname;
     private final LocalDateTime timestamp;
-    private final History history;
+    private final RoomedHistory history;
 
     public ChangeIdCommand(Connection connection, Identificator identificator, String newNickname,
-                           LocalDateTime timestamp, History history) {
+                           LocalDateTime timestamp, RoomedHistory history) {
         this.connection = connection;
         this.identificator = identificator;
         this.newNickname = newNickname;
@@ -45,6 +44,6 @@ public class ChangeIdCommand implements Command {
         String decoratedMessage = "[" + timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] " + message;
         Room room = connection.getRoom();
         room.sendToAll(decoratedMessage);
-        history.save(decoratedMessage, timestamp);
+        history.save(decoratedMessage, timestamp, room.getTitle());
     }
 }
