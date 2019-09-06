@@ -10,17 +10,17 @@ import java.util.Map;
 
 public class ChatCommandFactory implements CommandFactory {
     private final Parser parser;
-    private final Room room;
+    private final RoomStore roomStore;
     private final Saver saver;
     private final Identificator identificator;
     private final HistoryAccessObject history;
 
     public ChatCommandFactory(Parser parser,
-                              Room room,
+                              RoomStore roomStore,
                               Saver saver,
                               Identificator identificator, HistoryAccessObject history) {
         this.parser = parser;
-        this.room = room;
+        this.roomStore = roomStore;
         this.saver = saver;
         this.identificator = identificator;
         this.history = history;
@@ -40,9 +40,16 @@ public class ChatCommandFactory implements CommandFactory {
                 return createChangeIdCommand(connection, fieldMap, timestamp);
             case CLOSE:
                 return createCloseCommand(connection);
+            case CHROOM:
+                return createChangeRoomCommand(connection, fieldMap, timestamp);
             default:
                 throw new IllegalArgumentException("Unknown command type: " + type);
         }
+    }
+
+    private Command createChangeRoomCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
+        String newRoomTitle = fieldMap.get("msg");
+        return new ChangeRoomCommand(roomStore, connection, newRoomTitle);
     }
 
     private Command createHistCommand(Connection connection) {
@@ -50,16 +57,16 @@ public class ChatCommandFactory implements CommandFactory {
     }
 
     private Command createCloseCommand(Connection connection) {
-        return new CloseCommand(connection, room);
+        return new CloseCommand(connection);
     }
 
     private SendCommand createSendCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String message = fieldMap.get("msg");
-        return new SendCommand(connection, room, message, saver, timestamp);
+        return new SendCommand(connection, message, saver, timestamp);
     }
 
     private ChangeIdCommand createChangeIdCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String newNickname = fieldMap.get("msg");
-        return new ChangeIdCommand(connection, identificator, newNickname, timestamp, room, saver);
+        return new ChangeIdCommand(connection, identificator, newNickname, timestamp, saver);
     }
 }
