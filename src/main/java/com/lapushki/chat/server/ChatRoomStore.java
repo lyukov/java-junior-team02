@@ -15,13 +15,18 @@ public class ChatRoomStore implements RoomStore {
     }
 
     @Override
+    public void sendToAll(String message) {
+        roomsMap.values().forEach( (room) -> room.sendToAll(message) );
+    }
+
+    @Override
     public void changeRoom(Connection connection, String newRoomTitle) {
         final Room oldRoom = connection.getRoom();
         if (oldRoom != null) {
             oldRoom.remove(connection);
         }
         final Room newRoom = getRoom(newRoomTitle);
-        newRoom.register(connection);
+        newRoom.add(connection);
         connection.setRoom(newRoom);
     }
 

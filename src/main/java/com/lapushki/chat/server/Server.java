@@ -5,13 +5,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    private RoomStore roomStore;
     private ServerSocket connectionListener;
     private ConnectionFactory connectionFactory;
-    private Room room;
+    private ConnectionPool connectionPool;
 
-    public Server(ConnectionFactory connectionFactory, Room room) {
+    public Server(RoomStore roomStore, ConnectionFactory connectionFactory, ConnectionPool connectionPool) {
+        this.roomStore = roomStore;
         this.connectionFactory = connectionFactory;
-        this.room = room;
+        this.connectionPool = connectionPool;
     }
 
     void startServer() {
@@ -21,7 +23,7 @@ public class Server {
             while (true) {
                 Socket socket = connectionListener.accept();
                 Connection connection = connectionFactory.createConnection(socket);
-                room.register(connection);
+                connectionPool.register(connection);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,8 +34,8 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (connectionListener != null) {
                 try {
-                    room.sendToAll("Server died ;<");
-                    room.closeAll();
+                    roomStore.sendToAll("Server died ;<");
+                    connectionPool.closeAll();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
