@@ -20,13 +20,13 @@ public class ChatConnection implements Connection {
     private Room room;
     private boolean isClosed = false;
 
-    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory, Room room) {
+    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory) {
         this.username = username;
         this.socket = socket;
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.commandFactory = commandFactory;
-        this.room = room;
+        this.room = null;
     }
 
     @Override
@@ -63,6 +63,11 @@ public class ChatConnection implements Connection {
     @Override
     public Room getRoom() {
         return room;
+    }
+
+    @Override
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     @Override
