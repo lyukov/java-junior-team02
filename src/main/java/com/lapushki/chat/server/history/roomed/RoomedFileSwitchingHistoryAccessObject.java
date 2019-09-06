@@ -33,7 +33,7 @@ public class RoomedFileSwitchingHistoryAccessObject implements RoomedHistory{
 
     @Override
     public List<String> getHistory(String roomName) {
-        return null;
+        return roomsAccessObjects.get(roomName).getHistory();
     }
 
     @Override
