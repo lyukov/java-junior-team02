@@ -2,6 +2,7 @@ package com.lapushki.chat.server;
 
 import com.lapushki.chat.server.commands.Command;
 import com.lapushki.chat.server.exceptions.ChatException;
+import com.lapushki.chat.server.exceptions.NotInTheRoomException;
 import com.lapushki.chat.server.exceptions.OccupiedNicknameException;
 import com.lapushki.chat.server.exceptions.UnidentifiedUserException;
 
@@ -20,13 +21,13 @@ public class ChatConnection implements Connection {
     private Room room;
     private boolean isClosed = false;
 
-    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory, Room room) {
+    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory) {
         this.username = username;
         this.socket = socket;
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.commandFactory = commandFactory;
-        this.room = room;
+        this.room = null;
     }
 
     @Override
@@ -61,6 +62,16 @@ public class ChatConnection implements Connection {
     }
 
     @Override
+    public Room getRoom() {
+        return room;
+    }
+
+    @Override
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    @Override
     public void setUsername(String username) {
         this.username = username;
     }
@@ -74,6 +85,8 @@ public class ChatConnection implements Connection {
             processException(e, "First command should be /chid");
         } catch (OccupiedNicknameException e) {
             processException(e, "This nickname is occupied, try another one");
+        } catch (NotInTheRoomException e) {
+            processException(e, "Please enter the room before writing");
         } catch (ChatException e) {
             processException(e, "Some error has occurred");
         }

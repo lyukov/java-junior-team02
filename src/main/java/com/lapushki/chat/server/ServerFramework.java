@@ -11,7 +11,7 @@ public class ServerFramework {
         Parser parser = new Parser("\0", ":");
         Saver saver = new SwitchingFileSaver();
         Identificator identificator = new Identificator();
-        Room room = new ChatRoom();
+        Room room = new ChatRoom(title);
         HistoryAccessObject history = new HistoryAccessObject();
         CommandFactory commandFactory = new ChatCommandFactory(parser, room, saver, identificator, history);
         ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
