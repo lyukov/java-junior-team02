@@ -61,6 +61,11 @@ public class ChatConnection implements Connection {
     }
 
     @Override
+    public Room getRoom() {
+        return room;
+    }
+
+    @Override
     public void setUsername(String username) {
         this.username = username;
     }
