@@ -26,7 +26,7 @@ public class RoomedFileSwitchingHistoryAccessObject implements RoomedHistory{
     private void createDirectoryIfNotExist(String roomName) {
         File directory = new File("./resources/History/" + roomName);
         if(!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs();
         }
     }
 
