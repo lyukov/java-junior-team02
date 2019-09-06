@@ -10,13 +10,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ChatRoom implements Room {
     private final String title;
     private Collection<Connection> connections;
-    private final ExecutorService executorService;
     private final ReadWriteLock rwl;
 
     public ChatRoom(String title) {
         this.title = title;
         connections = new ArrayList<>();
-        this.executorService = Executors.newCachedThreadPool();
         rwl = new ReentrantReadWriteLock(false);
     }
 
@@ -36,14 +34,13 @@ public class ChatRoom implements Room {
     }
 
     @Override
-    public void register(Connection connection) {
+    public void add(Connection connection) {
         try {
             rwl.writeLock().lock();
             connections.add(connection);
         } finally {
             rwl.writeLock().unlock();
         }
-        executorService.execute(connection);
     }
 
     @Override
@@ -54,17 +51,5 @@ public class ChatRoom implements Room {
         } finally {
             rwl.writeLock().unlock();
         }
-        connection.close();
-    }
-
-    @Override
-    public void closeAll() {
-        try {
-            rwl.readLock().lock();
-            connections.forEach(Connection::close);
-        } finally {
-            rwl.readLock().unlock();
-        }
-        executorService.shutdown();
     }
 }
