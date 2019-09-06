@@ -28,8 +28,8 @@ public class Server implements ConnectionListener {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 try {
-                    Connection connection = new Connection(this, serverSocket.accept());
-                    connection.init();
+                    Connection connection = new Connection(serverSocket.accept());
+                    connection.init(this);
                     log.info("New client: " + connection);
                 } catch (IOException e) {
                     log.error("Connection exception: " + e);
