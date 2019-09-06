@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatConnection implements Connection {
     private String username;
@@ -19,17 +21,19 @@ public class ChatConnection implements Connection {
     private PrintWriter socketOut;
     private CommandFactory commandFactory;
     private Room room;
+    private final Logger logger;
     private boolean isClosed = false;
 
     ChatConnection(String username, Socket socket,
                    BufferedReader socketIn, PrintWriter socketOut,
-                   CommandFactory commandFactory) {
+                   CommandFactory commandFactory, Logger logger) {
         this.username = username;
         this.socket = socket;
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.commandFactory = commandFactory;
         this.room = null;
+        this.logger = logger;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class ChatConnection implements Connection {
                 processRequest(message);
             }
         } catch (IOException e) {
-            //TODO add logger
+            logger.log(Level.SEVERE, Decorator.getExceptionInSession(), e);
         }
     }
 
@@ -55,7 +59,7 @@ public class ChatConnection implements Connection {
     @Override
     public void close() {
         isClosed = true;
-        System.out.printf("Debug: %s session closed%n", username);
+        logger.log(Level.INFO, String.format("Debug: %s session closed%n", username));
     }
 
     @Override
@@ -92,10 +96,13 @@ public class ChatConnection implements Connection {
         } catch (ChatException e) {
             processException(e, "Some error has occurred");
         }
-        System.out.printf("Debug: %s %s %s%n", username, timeStamp, message);
+        String logLine = String.format("%s %s %s%n", username, timeStamp, message);
+        System.out.println(logLine);
+        logger.log(Level.INFO, "Debug: " + logLine);
     }
 
     private void processException(ChatException e, String message) {
+        logger.log(Level.SEVERE, Decorator.getExceptionInSession(), e);
         send(message);
     }
 }

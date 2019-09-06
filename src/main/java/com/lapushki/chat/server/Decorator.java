@@ -17,6 +17,7 @@ public class Decorator {
     private static String serverClosed = "Server closed";
     private static String shuttDownEx = "Exception in Shutdown Hook";
     private static String Exception = "Exception is thrown";
+    private static String exceptionInSession = "Exception in session";
 
     public static String leftMessage(String message) {
         return message + leaveMessage;
@@ -63,5 +64,9 @@ public class Decorator {
 
     public static String getException() {
         return Exception;
+    }
+
+    public static String getExceptionInSession() {
+        return exceptionInSession;
     }
 }
