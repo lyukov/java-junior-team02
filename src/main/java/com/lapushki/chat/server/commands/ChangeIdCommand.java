@@ -1,5 +1,6 @@
 package com.lapushki.chat.server.commands;
 
+import com.lapushki.chat.server.Decorator;
 import com.lapushki.chat.server.Identificator;
 import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.Room;
@@ -18,8 +19,11 @@ public class ChangeIdCommand implements Command {
     private final LocalDateTime timestamp;
     private final History history;
 
-    public ChangeIdCommand(Connection connection, Identificator identificator, String newNickname,
-                           LocalDateTime timestamp, History history) {
+    public ChangeIdCommand(Connection connection,
+                           Identificator identificator,
+                           String newNickname,
+                           LocalDateTime timestamp,
+                           History history) {
         this.connection = connection;
         this.identificator = identificator;
         this.newNickname = newNickname;
@@ -38,11 +42,11 @@ public class ChangeIdCommand implements Command {
     private void sendChangedNicknameMessage(String oldNickname, String newNickname) throws IOException {
         String message = "";
         if (oldNickname == null) {
-            message = newNickname + " joined the chat";
+            message = Decorator.joinMessage(newNickname);
         } else {
-            message = oldNickname + " has changed name to " + newNickname;
+            message = Decorator.changeNameMessage(oldNickname, newNickname);
         }
-        String decoratedMessage = "[" + timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] " + message;
+        String decoratedMessage = Decorator.decorate(message, timestamp);
         Room room = connection.getRoom();
         room.sendToAll(decoratedMessage);
         history.save(decoratedMessage, timestamp);

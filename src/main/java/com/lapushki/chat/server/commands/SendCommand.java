@@ -1,6 +1,7 @@
 package com.lapushki.chat.server.commands;
 
 import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.Decorator;
 import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.ChatException;
 import com.lapushki.chat.server.exceptions.NotInTheRoomException;
@@ -27,19 +28,13 @@ public class SendCommand implements Command {
     @Override
     public void execute() throws ChatException, IOException {
         checkUsername();
-        String decoratedMessage = decorate(message);
+        String decoratedMessage = Decorator.decorate(message,timestamp,connection.getUsername());
         Room room = connection.getRoom();
         if (room == null) {
             throw new NotInTheRoomException();
         }
         room.sendToAll(decoratedMessage);
         history.save(decoratedMessage, timestamp);
-    }
-
-    private String decorate(String message) {
-        return "[" + timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] " +
-                connection.getUsername() + ": " +
-                message;
     }
 
     private void checkUsername() throws UnidentifiedUserException {
