@@ -1,6 +1,7 @@
 package com.lapushki.chat.server;
 
-import com.lapushki.chat.server.history.HistoryAccessObject;
+import com.lapushki.chat.server.history.roomed.RoomedFileSwitchingHistoryAccessObject;
+import com.lapushki.chat.server.history.roomed.RoomedHistory;
 
 import java.io.IOException;
 
@@ -10,7 +11,7 @@ public class ServerFramework {
         Identificator identificator = new Identificator();
         RoomStore roomStore = new ChatRoomStore();
         ConnectionPool connectionPool = new ConnectionPool();
-        HistoryAccessObject history = new HistoryAccessObject();
+        RoomedHistory history = new RoomedFileSwitchingHistoryAccessObject();
         CommandFactory commandFactory = new ChatCommandFactory(parser, roomStore, identificator, history);
         ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
         System.out.println("Server starts");
