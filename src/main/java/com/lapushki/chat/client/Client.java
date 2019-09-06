@@ -28,8 +28,8 @@ public class Client implements ConnectionListener {
 
     private void start() {
         try {
-            connection = new Connection(this, HOST, PORT);
-            connection.init();
+            connection = new Connection(HOST, PORT);
+            connection.init(this);
             while (true) {
                 userMessage = scan.nextLine();
                 if (validateInput(userMessage)) {
