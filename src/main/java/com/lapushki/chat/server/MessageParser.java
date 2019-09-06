@@ -20,7 +20,7 @@ class MessageParser {
                 messageHandler.handleHistory(connection);
                 break;
             case Constants.CHID:
-                messageHandler.handleChid(connection);
+                messageHandler.handleChid(connection, message.message);
                 break;
             default:
                 //todo throw exception or response to client with an error

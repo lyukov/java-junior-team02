@@ -15,7 +15,9 @@ import java.util.Date;
 import static com.lapushki.chat.model.ResponseMessage.failResponseMessageWithCurrentTime;
 import static com.lapushki.chat.model.ResponseMessage.okResponseMessageWithCurrentTime;
 
-class MessageHandler {
+import static com.lapushki.chat.server.Server.userNames;
+
+public class MessageHandler {
     private static final Logger log = LoggerFactory.getLogger(MessageHandler.class);
     private static DAO dao;
 
@@ -27,9 +29,15 @@ class MessageHandler {
         }
     }
 
-    void handleChid(Connection connection) {
+    synchronized void handleChid(Connection connection, String message) {
         log.info("Change id request: " + connection.toString());
-        //todo add change id
+        if( !(userNames.add(message))) {
+            connection.sendMessage("nickname " + message + " is taken by another user. Choose another nickname." );
+        }
+        else {
+            connection.sendMessage("server code 1234567");
+            connection.sendMessage("your nickname for this session is " + message );
+        }
     }
 
     void handleExit(Connection connection) {

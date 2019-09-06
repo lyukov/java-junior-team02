@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class Server implements ConnectionListener {
@@ -20,6 +21,7 @@ public class Server implements ConnectionListener {
     private static final MessageHandler messageHandler = new MessageHandler();
     private final Collection<Connection> connections = new LinkedList<>();
     private static final Gson gson = new GsonBuilder().create();
+    static Collection<String> userNames = new HashSet<>();
 
     private void start() {
         log.info("Server running...");
