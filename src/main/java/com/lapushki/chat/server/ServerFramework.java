@@ -6,16 +6,16 @@ import com.lapushki.chat.server.history.saver.SwitchingFileSaver;
 
 import java.io.IOException;
 
-public class ServerLauncher {
+public class ServerFramework {
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser("\0", ":");
         Saver saver = new SwitchingFileSaver();
         Identificator identificator = new Identificator();
-        Group group = new ChatGroup();
+        Room room = new ChatRoom();
         HistoryAccessObject history = new HistoryAccessObject();
-        CommandFactory commandFactory = new ChatCommandFactory(parser, group, saver, identificator, history);
+        CommandFactory commandFactory = new ChatCommandFactory(parser, room, saver, identificator, history);
         ConnectionFactory connectionFactory = new ChatConnectionFactory(commandFactory);
         System.out.println("Server starts");
-        new Server(connectionFactory, group).startServer();
+        new Server(connectionFactory, room).startServer();
     }
 }

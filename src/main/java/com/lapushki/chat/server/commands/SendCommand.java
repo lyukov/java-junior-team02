@@ -1,7 +1,7 @@
 package com.lapushki.chat.server.commands;
 
-import com.lapushki.chat.server.Session;
-import com.lapushki.chat.server.SessionStore;
+import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.UnidentifiedUserException;
 import com.lapushki.chat.server.history.saver.Saver;
 
@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class SendCommand implements Command {
-    private final Session session;
-    private final SessionStore sessionStore;
+    private final Connection connection;
+    private final Room room;
     private final String message;
     private final Saver saver;
     private final LocalDateTime timestamp;
 
-    public SendCommand(Session session, SessionStore sessionStore, String message, Saver saver, LocalDateTime timestamp) {
-        this.session = session;
-        this.sessionStore = sessionStore;
+    public SendCommand(Connection connection, Room room, String message, Saver saver, LocalDateTime timestamp) {
+        this.connection = connection;
+        this.room = room;
         this.message = message;
         this.saver = saver;
         this.timestamp = timestamp;
@@ -28,18 +28,18 @@ public class SendCommand implements Command {
     public void execute() throws UnidentifiedUserException, IOException {
         checkUsername();
         String decoratedMessage = decorate(message);
-        sessionStore.sendToAll(decoratedMessage);
+        room.sendToAll(decoratedMessage);
         saver.save(decoratedMessage, timestamp);
     }
 
     private String decorate(String message) {
         return "[" + timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] " +
-                session.getUsername() + ": " +
+                connection.getUsername() + ": " +
                 message;
     }
 
     private void checkUsername() throws UnidentifiedUserException {
-        String nickname = session.getUsername();
+        String nickname = connection.getUsername();
         if (nickname == null) {
             throw new UnidentifiedUserException();
         }

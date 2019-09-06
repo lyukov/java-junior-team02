@@ -6,12 +6,12 @@ import java.net.Socket;
 
 public class Server {
     private ServerSocket connectionListener;
-    private SessionFactory sessionFactory;
-    private SessionStore sessionStore;
+    private ConnectionFactory connectionFactory;
+    private Room room;
 
-    public Server(SessionFactory sessionFactory, SessionStore sessionStore) {
-        this.sessionFactory = sessionFactory;
-        this.sessionStore = sessionStore;
+    public Server(ConnectionFactory connectionFactory, Room room) {
+        this.connectionFactory = connectionFactory;
+        this.room = room;
     }
 
     void startServer() {
@@ -20,8 +20,8 @@ public class Server {
             registerShutdownHook();
             while (true) {
                 Socket socket = connectionListener.accept();
-                Session session = sessionFactory.createSession(socket);
-                sessionStore.register(session);
+                Connection connection = connectionFactory.createConnection(socket);
+                room.register(connection);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,8 +32,8 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (connectionListener != null) {
                 try {
-                    sessionStore.sendToAll("Server died ;<");
-                    sessionStore.closeAll();
+                    room.sendToAll("Server died ;<");
+                    room.closeAll();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

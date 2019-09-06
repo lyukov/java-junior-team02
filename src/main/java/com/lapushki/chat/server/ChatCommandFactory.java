@@ -10,56 +10,56 @@ import java.util.Map;
 
 public class ChatCommandFactory implements CommandFactory {
     private final Parser parser;
-    private final SessionStore sessionStore;
+    private final Room room;
     private final Saver saver;
     private final Identificator identificator;
     private final HistoryAccessObject history;
 
     public ChatCommandFactory(Parser parser,
-                              SessionStore sessionStore,
+                              Room room,
                               Saver saver,
                               Identificator identificator, HistoryAccessObject history) {
         this.parser = parser;
-        this.sessionStore = sessionStore;
+        this.room = room;
         this.saver = saver;
         this.identificator = identificator;
         this.history = history;
     }
 
     @Override
-    public Command createCommand(Session session, String message, LocalDateTime timestamp) {
+    public Command createCommand(Connection connection, String message, LocalDateTime timestamp) {
         Map<String, String> fieldMap = parser.parse(message);
         String type = fieldMap.get("type");
         CommandType commandType = CommandType.fromString(type);
         switch (commandType) {
             case HIST:
-                return createHistCommand(session);
+                return createHistCommand(connection);
             case SEND:
-                return createSendCommand(session, fieldMap, timestamp);
+                return createSendCommand(connection, fieldMap, timestamp);
             case CHID:
-                return createChangeIdCommand(session, fieldMap, timestamp);
+                return createChangeIdCommand(connection, fieldMap, timestamp);
             case CLOSE:
-                return createCloseCommand(session);
+                return createCloseCommand(connection);
             default:
                 throw new IllegalArgumentException("Unknown command type: " + type);
         }
     }
 
-    private Command createHistCommand(Session session) {
-        return new HistoryCommand(session, history);
+    private Command createHistCommand(Connection connection) {
+        return new HistoryCommand(connection, history);
     }
 
-    private Command createCloseCommand(Session session) {
-        return new CloseCommand(session, sessionStore);
+    private Command createCloseCommand(Connection connection) {
+        return new CloseCommand(connection, room);
     }
 
-    private SendCommand createSendCommand(Session session, Map<String, String> fieldMap, LocalDateTime timestamp) {
+    private SendCommand createSendCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String message = fieldMap.get("msg");
-        return new SendCommand(session, sessionStore, message, saver, timestamp);
+        return new SendCommand(connection, room, message, saver, timestamp);
     }
 
-    private ChangeIdCommand createChangeIdCommand(Session session, Map<String, String> fieldMap, LocalDateTime timestamp) {
+    private ChangeIdCommand createChangeIdCommand(Connection connection, Map<String, String> fieldMap, LocalDateTime timestamp) {
         String newNickname = fieldMap.get("msg");
-        return new ChangeIdCommand(session, identificator, newNickname, timestamp, sessionStore, saver);
+        return new ChangeIdCommand(connection, identificator, newNickname, timestamp, room, saver);
     }
 }

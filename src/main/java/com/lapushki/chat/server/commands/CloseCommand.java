@@ -1,28 +1,28 @@
 package com.lapushki.chat.server.commands;
 
-import com.lapushki.chat.server.Session;
-import com.lapushki.chat.server.SessionStore;
+import com.lapushki.chat.server.Connection;
+import com.lapushki.chat.server.Room;
 
 public class CloseCommand implements Command {
-    private final Session session;
-    private final SessionStore sessionStore;
+    private final Connection connection;
+    private final Room room;
 
-    public CloseCommand(Session session, SessionStore sessionStore) {
-        this.session = session;
-        this.sessionStore = sessionStore;
+    public CloseCommand(Connection connection, Room room) {
+        this.connection = connection;
+        this.room = room;
     }
 
     @Override
     public void execute() {
-        sessionStore.remove(session);
+        room.remove(connection);
         sendLeaveMessage();
     }
 
     private void sendLeaveMessage() {
-        String nickname = session.getUsername();
+        String nickname = connection.getUsername();
         if (nickname != null) {
             String message = nickname + " has left the chat";
-            sessionStore.sendToAll(message);
+            room.sendToAll(message);
         }
     }
 }

@@ -9,23 +9,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 import java.time.LocalDateTime;
 
-public class ChatSession implements Session {
+public class ChatConnection implements Connection {
     private String username;
     private Socket socket;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
     private CommandFactory commandFactory;
+    private Room room;
     private boolean isClosed = false;
 
-    ChatSession(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory) {
+    ChatConnection(String username, Socket socket, BufferedReader socketIn, PrintWriter socketOut, CommandFactory commandFactory, Room room) {
         this.username = username;
         this.socket = socket;
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.commandFactory = commandFactory;
+        this.room = room;
     }
 
     @Override
@@ -44,7 +45,6 @@ public class ChatSession implements Session {
 
     @Override
     public void send(String message) {
-//            e.printStackTrace();
         socketOut.println(message);
         socketOut.flush();
     }

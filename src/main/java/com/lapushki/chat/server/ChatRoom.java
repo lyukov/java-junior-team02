@@ -7,12 +7,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ChatGroup implements Group {
+public class ChatRoom implements Room {
     private Collection<Connection> connections;
     private final ExecutorService executorService;
     private final ReadWriteLock rwl;
 
-    public ChatGroup() {
+    public ChatRoom() {
         connections = new ArrayList<>();
         this.executorService = Executors.newCachedThreadPool();
         rwl = new ReentrantReadWriteLock(false);
