@@ -4,15 +4,16 @@ import com.lapushki.chat.server.Connection;
 import com.lapushki.chat.server.Decorator;
 import com.lapushki.chat.server.Room;
 import com.lapushki.chat.server.exceptions.NotInTheRoomException;
-import com.lapushki.chat.server.history.HistoryAccessObject;
+import com.lapushki.chat.server.history.roomed.RoomedHistory;
 
 import java.util.List;
 
 public class HistoryCommand implements Command {
     private final Connection connection;
-    private final HistoryAccessObject history;
+    private final RoomedHistory history;
 
-    public HistoryCommand(Connection connection, HistoryAccessObject history) {
+
+    public HistoryCommand(Connection connection, RoomedHistory history) {
         this.connection = connection;
         this.history = history;
     }

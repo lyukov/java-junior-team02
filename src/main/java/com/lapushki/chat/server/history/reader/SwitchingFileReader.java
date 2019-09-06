@@ -1,18 +1,28 @@
 package com.lapushki.chat.server.history.reader;
 
+import com.razdolbai.server.history.saver.SwitchingFileSaver;
+
 import java.io.*;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SwitchingFileReader implements Reader {
     private static final int initialCapacity = 2097152 * 5;
+    private String pathname = "./resources/History";
     //About half of a day
+
+    public SwitchingFileReader(){}
+    public SwitchingFileReader(String folder) {
+        this.pathname = pathname + "/" + folder;
+    }
+
 
     @Override
     public List<String> getHistory() {
         ArrayList<String> res  = new ArrayList<>(initialCapacity);
-        readAllLinesDFS(new File("./resources/History"), res);
+        readAllLinesDFS(new File(pathname), res);
         return res;
     }
 
@@ -24,9 +34,7 @@ public class SwitchingFileReader implements Reader {
         for(File currentFile : files) {
             if(currentFile.isDirectory()) {
                 readAllLinesDFS(currentFile, res);
-            }
-
-            if (currentFile.isFile()) {
+            } else {
                 try (BufferedReader reader = new BufferedReader(new FileReader(currentFile))) {
                     String line;
                     while ( (line = reader.readLine()) != null ) {

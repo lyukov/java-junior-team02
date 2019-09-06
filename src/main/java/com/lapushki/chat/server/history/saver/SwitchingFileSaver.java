@@ -3,21 +3,23 @@ package com.lapushki.chat.server.history.saver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
 /**
  * File Saver which switches file on date changing or limit exceeding
- * File size limit - 2^21 messages in 2-byte encoding 150 symbols per each
+ * Default size limit - 30000 symbols (about one file in 5 minutes)
  */
 public class SwitchingFileSaver extends FileSaver {
     private final int sizeLimit;
     private int sizeCounter = 0;
     private int fileCounter = 0;
     private final static String pathname = Paths.get(".","resources", "History").toString();
-    private final static String name = "history";
+    private String name = "history";
     private final static String format = ".txt";
-    private final static int defaultSizeLimit = 2 * 150 * 2097152;
+    private final static int defaultSizeLimit = 30000;
+    //about one file per 5 minute
     private final int dateTimeSize;
 
 
@@ -29,6 +31,12 @@ public class SwitchingFileSaver extends FileSaver {
     }
 
     private LocalDateTime dateTime;
+
+
+    public SwitchingFileSaver(String folder) throws IOException {
+        this();
+        this.name = folder + "/" + this.name;
+    }
 
     public SwitchingFileSaver(int sizeLimit) throws IOException {
         dateTime = LocalDateTime.now();
